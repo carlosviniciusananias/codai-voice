@@ -1,0 +1,60 @@
+---
+description: Automação de Commits e Pull Requests no GitHub
+globs:
+---
+
+# GitHub Workflow Standard
+
+Sempre que eu solicitar a finalização de uma tarefa ou o envio para o GitHub, siga este fluxo rigoroso utilizando o MCP oficial do GitHub:
+
+## 1. Preparação da Branch
+
+- **Nome da Branch:** Deve seguir o padrão `feature/CARD-ID` (extraia o ID do arquivo `docs/requirements/CARD-ID.md` ativo).
+- **Ação:** Verifique se a branch já existe. Se não, use a ferramenta `create_branch` (ou equivalente do MCP oficial) a partir da `main`.
+
+## 2. Commit das Alterações
+
+- **Mensagem de Commit:** Use o padrão `feat: [Título do Card] (PROJ-ID)`.
+- **Conteúdo:** Certifique-se de incluir todos os arquivos criados/modificados no contexto atual.
+- **Ação:** Use a ferramenta de push/commit do MCP oficial.
+
+## 3. Pull Request (PR)
+
+- **Título:** `feat: [Nome do Card no Jira]`
+- **Corpo do PR (Template):**
+
+  ```markdown
+  ## 📋 Descrição
+
+  [Resumo técnico do que foi implementado]
+
+  ## 🔗 Vínculos
+
+  - Jira: [Link do Card]
+  - Documentação: `docs/requirements/CARD-ID.md`
+
+  ## 🛠️ Alterações Principais
+
+  - [Listar principais arquivos ou componentes]
+
+  ## ✅ Checklist de Qualidade
+
+  - [x] Testes unitários implementados
+  - [x] Testes E2E (Playwright) aprovados
+  - [x] Code Review via IA concluído
+  ```
+
+- **Ação:** Use a ferramenta `create_pull_request`.
+
+## 4. Sincronização Final (Jira)
+
+- Após o PR ser criado com sucesso, você deve:
+  1. Obter a URL do PR.
+  2. Usar o **MCP Jira** (seu servidor customizado) para:
+     - Adicionar um comentário no card com o link do PR.
+     - Mover o card para a lista "Itens concluídos".
+     - Adicionar o link do PR como anexo.
+
+## Gatilhos de Ativação
+
+- Quando eu disser "@pr" ou "finalizar tarefa" ou "subir para o github".

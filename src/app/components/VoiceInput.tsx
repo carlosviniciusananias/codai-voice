@@ -57,14 +57,12 @@ export default function VoiceInput({
     const Ctor = getRecognitionConstructor();
 
     if (!Ctor) {
-      setIsSupported(false);
+      // Web Speech API não suportada neste ambiente; mantém isSupported no valor inicial
       if (onError) {
         onError("Web Speech API not supported.");
       }
       return;
     }
-
-    setIsSupported(true);
 
     return () => {
       recognitionRef.current?.stop();

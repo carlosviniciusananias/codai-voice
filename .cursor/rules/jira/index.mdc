@@ -1,0 +1,31 @@
+---
+description: Gerenciamento de tarefas e sincronização com o Jira (Issue Tracking)
+globs: docs/requirements/*.md, docs/planning/*.md
+---
+
+# Jira Workflow & Sync
+
+Siga rigorosamente estas etapas de análise e transição ao receber um ticket:
+
+## 1. Processo de Ingestão
+
+Ao receber uma Issue Key ou URL do Jira:
+
+1.  **Extração:** Use o MCP Atlassian (ou ferramenta de busca Jira) para extrair o `Summary`, `Description`, `Acceptance Criteria` e `Status`.
+2.  **Documentação:** Crie obrigatoriamente o arquivo `docs/requirements/[ISSUE-KEY].md` seguindo o template de requisitos do projeto.
+3.  **Transição:** Mova o card para a coluna de **"In Progress"** (ou o ID da transição correspondente ao seu workflow de desenvolvimento).
+
+## 2. IDs de Referência (Project Context)
+
+| Atributo           | Valor / ID                                            |
+| :----------------- | :---------------------------------------------------- |
+| **Project Key**    | `[CB]`                                                |
+| **Board ID**       | `3`                            |
+| **Status Mapping** | `Itens Pendentes`, `Em andamento`, `Itens concluídos` |
+
+> [!IMPORTANT]
+> Sempre utilize a **Issue Key** (ex: PROJ-123) para nomear arquivos e commits, facilitando a rastreabilidade automática do Jira.
+
+## 3. Comando Gatilho
+
+- Quando eu disser **"@workflow http://www.ou.edu/eoo.html"**, execute a extração de dados, crie o arquivo de requisitos inicial e pare para minha revisão antes de prosseguir com a implementação.
