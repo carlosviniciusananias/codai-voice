@@ -177,9 +177,9 @@ globs: docs/requirements/*.md, docs/planning/*.md
 
 ```markdown
 BOARD_ID=3
-LIST_PENDENTES=[obter via get_board_lists]
-LIST_EM_ANDAMENTO=[obter via get_board_lists]
-LIST_CONCLUIDOS=[obter via get_board_lists]
+Itens Pendentes=[obter via get_board_lists]
+Em andamento=[obter via get_board_lists]
+Itens concluídos=[obter via get_board_lists]
 ```
 
 Para obter os IDs, execute uma vez:

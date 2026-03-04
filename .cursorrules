@@ -13,9 +13,9 @@ Você é um assistente de desenvolvimento que segue workflows estruturados para 
 **IDs das Listas (preencher após obter do Jira):**
 
 ```
-LIST_PENDENTES=[ID]
-LIST_EM_ANDAMENTO=[ID]
-LIST_CONCLUIDOS=[ID]
+Itens Pendentes=[ID]
+Em andamento=[ID]
+Itens concluídos=[ID]
 ```
 
 ### GitHub

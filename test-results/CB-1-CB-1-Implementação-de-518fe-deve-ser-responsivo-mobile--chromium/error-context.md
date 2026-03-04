@@ -1,0 +1,59 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]: cv
+          - paragraph [ref=e8]: codaí voice
+        - navigation "Navegação principal" [ref=e9]:
+          - link "Studio" [ref=e10] [cursor=pointer]:
+            - /url: /
+            - button "Studio" [ref=e11]
+          - button "Histórico" [ref=e12]
+          - button "Configurações" [ref=e13]
+          - button "Ajuda" [ref=e14]
+    - main [ref=e15]:
+      - region "Studio de geração de componentes por voz" [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - heading "Studio Studio" [level=1] [ref=e19]
+            - paragraph [ref=e20]: Transforme suas ideias em realidade. Descreva o componente e veja a mágica acontecer em tempo real.
+          - generic [ref=e22]: Pronto
+        - generic [ref=e26]:
+          - generic [ref=e28]:
+            - generic [ref=e30]:
+              - img [ref=e31]
+              - heading "Comando de Voz" [level=2] [ref=e34]
+            - generic [ref=e35]:
+              - button "Iniciar gravação" [ref=e36]:
+                - img [ref=e37]
+                - generic [ref=e40]: Falar
+              - paragraph [ref=e42]:
+                - generic [ref=e43]: "Dica:"
+                - text: "Experimente dizer: \"Crie um card de perfil com foto, nome e um botão de seguir\""
+          - generic [ref=e45]:
+            - generic [ref=e46]:
+              - generic [ref=e48]:
+                - generic [ref=e49]:
+                  - img [ref=e50]
+                  - heading "Código Fonte" [level=2] [ref=e54]
+                - generic [ref=e55]: TSX
+              - code [ref=e59]: // Fale para gerar o código...
+            - generic [ref=e60]:
+              - generic [ref=e62]:
+                - img [ref=e63]
+                - heading "Preview" [level=2] [ref=e66]
+              - generic [ref=e68]:
+                - img [ref=e70]
+                - paragraph [ref=e73]: O preview aparecerá aqui
+    - contentinfo [ref=e74]:
+      - generic [ref=e76]:
+        - paragraph [ref=e77]: Codaí Voice
+        - paragraph [ref=e78]: Experimento pessoal © 2026
+  - button "Open Next.js Dev Tools" [ref=e84] [cursor=pointer]:
+    - img [ref=e85]
+  - alert [ref=e88]
+```

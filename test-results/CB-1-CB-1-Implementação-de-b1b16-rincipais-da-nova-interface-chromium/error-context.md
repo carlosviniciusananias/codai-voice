@@ -1,0 +1,63 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]: cv
+          - generic [ref=e7]:
+            - paragraph [ref=e8]: codaí voice
+            - paragraph [ref=e9]: Fale. Gere componentes. Refine.
+        - navigation "Navegação principal" [ref=e10]:
+          - link "Studio" [ref=e11] [cursor=pointer]:
+            - /url: /
+            - button "Studio" [ref=e12]
+          - button "Histórico" [ref=e13]
+          - button "Configurações" [ref=e14]
+          - button "Ajuda" [ref=e15]
+    - main [ref=e16]:
+      - region "Studio de geração de componentes por voz" [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - heading "Studio Studio" [level=1] [ref=e20]
+            - paragraph [ref=e21]: Transforme suas ideias em realidade. Descreva o componente e veja a mágica acontecer em tempo real.
+          - generic [ref=e23]: Pronto
+        - generic [ref=e27]:
+          - generic [ref=e29]:
+            - generic [ref=e31]:
+              - img [ref=e32]
+              - heading "Comando de Voz" [level=2] [ref=e35]
+            - generic [ref=e36]:
+              - button "Iniciar gravação" [ref=e37]:
+                - img [ref=e38]
+                - generic [ref=e41]: Falar
+              - paragraph [ref=e43]:
+                - generic [ref=e44]: "Dica:"
+                - text: "Experimente dizer: \"Crie um card de perfil com foto, nome e um botão de seguir\""
+          - generic [ref=e46]:
+            - generic [ref=e47]:
+              - generic [ref=e49]:
+                - generic [ref=e50]:
+                  - img [ref=e51]
+                  - heading "Código Fonte" [level=2] [ref=e55]
+                - generic [ref=e56]: TSX
+              - code [ref=e60]: // Fale para gerar o código...
+            - generic [ref=e61]:
+              - generic [ref=e63]:
+                - img [ref=e64]
+                - heading "Preview" [level=2] [ref=e67]
+              - generic [ref=e69]:
+                - img [ref=e71]
+                - paragraph [ref=e74]: O preview aparecerá aqui
+    - contentinfo [ref=e75]:
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - paragraph [ref=e78]: Codaí Voice
+          - paragraph [ref=e79]: Experimento pessoal © 2026
+        - paragraph [ref=e80]: Design focado em clareza, velocidade e acessibilidade.
+  - button "Open Next.js Dev Tools" [ref=e86] [cursor=pointer]:
+    - img [ref=e87]
+  - alert [ref=e90]
+```

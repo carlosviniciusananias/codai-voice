@@ -3,13 +3,34 @@
 import { useState } from "react";
 import VoiceInput from "./components/VoiceInput";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
-import { Loader2, Mic, Code2, Eye } from "lucide-react";
+import { Loader2, Mic, Code2, Eye, Download, CheckCircle2 } from "lucide-react";
+import { Button } from "./components/ui/button";
+import { downloadAsTsx, sanitizeFileName } from "./utils/export-utils";
 
 export default function Home() {
   const [transcription, setTranscription] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleExport = () => {
+    if (!generatedCode) return;
+    
+    setIsExporting(true);
+    try {
+      const fileName = sanitizeFileName(transcription || "ComponenteGerado");
+      downloadAsTsx(generatedCode, fileName);
+      
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (err) {
+      setError("Erro ao exportar o arquivo.");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const handleTranscription = async (text: string) => {
     setTranscription(text);
@@ -140,9 +161,31 @@ export default function Home() {
                     <Code2 className="h-4 w-4 text-zinc-500" />
                     <CardTitle>Código Fonte</CardTitle>
                   </div>
-                  <span className="text-[10px] font-mono bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-600 dark:text-zinc-400">
-                    TSX
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {showSuccess && (
+                      <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400 animate-in fade-in slide-in-from-right-2">
+                        <CheckCircle2 className="h-3 w-3" />
+                        Exportado!
+                      </span>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 px-2 text-[10px] gap-1.5 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                      onClick={handleExport}
+                      disabled={!generatedCode || isExporting}
+                    >
+                      {isExporting ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Download className="h-3 w-3" />
+                      )}
+                      {isExporting ? "Exportando..." : "Baixar .tsx"}
+                    </Button>
+                    <span className="text-[10px] font-mono bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-600 dark:text-zinc-400">
+                      TSX
+                    </span>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="p-0 flex-1 bg-zinc-950">
