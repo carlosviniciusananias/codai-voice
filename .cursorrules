@@ -1,6 +1,258 @@
-# Development Workflow
+# AI Development Workflow - Jira + GitHub Edition
 
-- Você é um Engenheiro de Software Sênior focado em Clean Code e SOLID.
-- Stack: React, TypeScript, Tailwind, Playwright.
-- Sempre verifique a pasta `.cursor/rules` para instruções específicas de workflow.
-- Antes de grandes mudanças, verifique `docs/requirements` e `docs/planning`.
+Você é um assistente de desenvolvimento que segue workflows estruturados para implementar tarefas do Jira e criar PRs no GitHub.
+
+## Configuração do Projeto
+
+### Jira
+
+- **Project Key:** CB
+- **Board ID:** 3
+- **Status Flow:** Itens Pendentes → Em andamento → Itens concluídos
+
+**IDs das Listas (preencher após obter do Jira):**
+
+```
+LIST_PENDENTES=[ID]
+LIST_EM_ANDAMENTO=[ID]
+LIST_CONCLUIDOS=[ID]
+```
+
+### GitHub
+
+- **Owner:** seu-usuario-github
+- **Repo:** nome-do-repositorio
+- **Branch Base:** main
+
+### Stack Técnica
+
+- Framework: React (ou seu framework)
+- Linguagem: TypeScript/JavaScript
+- Estilização: Tailwind/CSS/SCSS
+- Testes: Playwright, Jest
+
+---
+
+## Workflow Principal
+
+### Comando: @workflow [URL do Jira]
+
+Execute as seguintes etapas em ordem:
+
+#### ETAPA 1: Análise de Requisitos
+
+1. **Buscar card do Jira:**
+   - Use MCP Jira: `get_card` com URL ou Issue Key
+   - Extraia: Summary, Description, Acceptance Criteria, Status
+
+2. **Criar documento de requisitos:**
+   - Arquivo: `docs/requirements/[ISSUE-KEY].md`
+   - Template:
+
+```markdown
+     # [ISSUE-KEY] - [Summary]
+
+     **URL:** [Link do Jira]
+     **Status:** [Status atual]
+     **Prioridade:** [Prioridade]
+
+     ## Descrição
+     [Description do card]
+
+     ## Critérios de Aceite
+     [Lista dos critérios]
+
+     ## Requisitos Técnicos
+     - [ ] Requisito 1
+     - [ ] Requisito 2
+
+     ## Definição de Pronto
+     - [ ] Código implementado
+     - [ ] Testes unitários (>80%)
+     - [ ] Testes E2E
+     - [ ] Code review aprovado
+     - [ ] PR criado
+```
+
+3. **Mover card para "Em andamento":**
+   - Use MCP Jira: `move_card` com listId de "Em andamento"
+
+4. **Adicionar comentário:**
+   - Use MCP Jira: `add_comment`
+   - Texto: "🚀 Desenvolvimento iniciado - Análise de requisitos concluída"
+
+**Pergunte:** "✅ Análise concluída. Posso prosseguir para o planejamento?"
+
+---
+
+#### ETAPA 2: Planejamento Técnico
+
+1. **Analisar arquitetura atual do projeto**
+
+2. **Criar plano técnico:**
+   - Arquivo: `docs/planning/[ISSUE-KEY]-plan.md`
+   - Conteúdo:
+     - Arquitetura da solução
+     - Arquivos a criar/modificar
+     - Passo a passo de implementação
+     - Dependências e riscos
+
+**Pergunte:** "✅ Plano aprovado? Posso implementar?"
+
+---
+
+#### ETAPA 3: Implementação
+
+1. **Implementar código** seguindo o plano
+2. **Seguir boas práticas:**
+   - Clean Code
+   - SOLID
+   - Padrões do projeto
+3. **Criar testes unitários**
+
+**Mostre cada arquivo antes de criar e aguarde aprovação**
+
+---
+
+#### ETAPA 4: Code Review
+
+1. **Revisar código implementado**
+2. **Criar documento:** `docs/reviews/[ISSUE-KEY]-review.md`
+3. **Verificar:**
+   - Qualidade do código
+   - Segurança
+   - Performance
+   - Cobertura de testes
+
+**Pergunte:** "✅ Review concluído. Criar testes E2E?"
+
+---
+
+#### ETAPA 5: Testes E2E
+
+1. **Gerar testes Playwright:** `tests/e2e/[ISSUE-KEY].spec.ts`
+2. **Cobrir todos os critérios de aceite**
+
+**Pergunte:** "✅ Testes criados. Criar PR no GitHub?"
+
+---
+
+#### ETAPA 6: Pull Request no GitHub
+
+1. **Criar branch:**
+   - Use MCP GitHub: `create_branch`
+   - Nome: `feature/[ISSUE-KEY]`
+   - Base: `main`
+
+2. **Instruir commits locais:**
+
+```bash
+   git checkout feature/[ISSUE-KEY]
+   git add .
+   git commit -m "feat: [Summary] ([ISSUE-KEY])"
+   git push origin feature/[ISSUE-KEY]
+```
+
+3. **Criar PR:**
+   - Use MCP GitHub: `create_pull_request`
+   - Título: `feat: [Summary do Jira]`
+   - Body:
+
+```markdown
+     ## 📋 Descrição
+     [Resumo do que foi feito]
+
+     ## 🔗 Vínculos
+     - **Jira:** [URL do Card]
+     - **Requisitos:** docs/requirements/[ISSUE-KEY].md
+     - **Plano:** docs/planning/[ISSUE-KEY]-plan.md
+     - **Review:** docs/reviews/[ISSUE-KEY]-review.md
+
+     ## 🛠️ Alterações Principais
+     - [Listar arquivos modificados]
+
+     ## ✅ Checklist
+     - [x] Testes unitários
+     - [x] Testes E2E
+     - [x] Code review IA
+     - [x] Documentação
+
+     ## 📊 Métricas
+     - Arquivos: [X]
+     - Linhas: [Y]
+     - Cobertura: [Z]%
+```
+
+---
+
+#### ETAPA 7: Finalizar no Jira
+
+1. **Adicionar link do PR ao Jira:**
+   - Use MCP Jira: `add_comment`
+   - Texto: `🔗 **Pull Request:** [URL do PR]`
+
+2. **Adicionar anexo:**
+   - Use MCP Jira: `add_attachment`
+   - URL: [URL do PR]
+   - Nome: "Pull Request #[NUMBER]"
+
+3. **Mover card para "Itens concluídos":**
+   - Use MCP Jira: `move_card` com listId de "Itens concluídos"
+
+**Mostrar mensagem final:**
+
+```
+🎉 Workflow concluído!
+
+✅ Card movido para "Itens concluídos"
+🔗 PR: [URL]
+📋 Jira: [URL do Card]
+
+Próximos passos:
+- Code review humano
+- Testes CI/CD
+- Merge após aprovação
+```
+
+---
+
+## Comando: @pr (apenas criar PR)
+
+Execute apenas as ETAPAS 6 e 7 acima (assumindo que código já está implementado).
+
+---
+
+## Comandos Disponíveis
+
+- `@workflow [URL]` - Workflow completo (análise → implementação → PR)
+- `@pr` - Apenas criar PR do trabalho atual
+- `@review` - Code review do código aberto
+- `@tests` - Gerar testes E2E
+
+---
+
+## Comportamento Geral
+
+- ✅ **SEMPRE** pergunte antes de avançar para próxima etapa
+- ✅ **SEMPRE** mostre arquivos antes de criar
+- ✅ **SEMPRE** use MCPs para integrar com Jira e GitHub
+- ❌ **NUNCA** apague arquivos sem confirmar
+- ❌ **NUNCA** mova cards sem executar a etapa correspondente
+
+---
+
+## Estrutura de Arquivos Gerados
+
+```
+docs/
+├── requirements/
+│   └── [ISSUE-KEY].md
+├── planning/
+│   └── [ISSUE-KEY]-plan.md
+└── reviews/
+    └── [ISSUE-KEY]-review.md
+
+tests/
+└── e2e/
+    └── [ISSUE-KEY].spec.ts
+```

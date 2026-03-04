@@ -145,10 +145,10 @@ export default function VoiceInput({
   const isDisabled = !isSupported;
 
   const label = !isSupported
-    ? "Voice recognition not supported."
+    ? "O reconhecimento de voz não é suportado."
     : isRecording
-      ? "Stop recording"
-      : "Start recording";
+      ? "Parar gravação"
+      : "Iniciar gravação";
 
   return (
     <button
@@ -157,18 +157,18 @@ export default function VoiceInput({
       disabled={isDisabled}
       aria-pressed={isRecording}
       aria-label={label}
-      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-900 disabled:cursor-not-allowed disabled:opacity-60 ${
+      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-900 disabled:cursor-not-allowed disabled:opacity-60 ${
         isRecording
-          ? "border-red-600 bg-red-600 text-white hover:bg-red-700"
-          : "border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-100"
+          ? "border-red-500 bg-red-500 text-white hover:bg-red-600 animate-pulse"
+          : "border-zinc-200 bg-white text-zinc-900 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
       }`}
     >
       {isRecording ? (
-        <Square className="h-4 w-4" aria-hidden="true" />
+        <Square className="h-4 w-4 fill-current" aria-hidden="true" />
       ) : (
         <Mic className="h-4 w-4" aria-hidden="true" />
       )}
-      <span>{isRecording ? "Gravando..." : "Record"}</span>
+      <span>{isRecording ? "Parar" : "Falar"}</span>
     </button>
   );
 }
