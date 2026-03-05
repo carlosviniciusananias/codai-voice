@@ -7,11 +7,11 @@ globs: docs/**/*.md
 
 ## Configuração do Repositório
 
-| Atributo        | Valor          |
-| :-------------- | :------------- |
-| **Owner**       | [carlosviniciusananias]  |
-| **Repo**        | [codai-voice] |
-| **Branch Base** | `main`         |
+| Atributo        | Valor                   |
+| :-------------- | :---------------------- |
+| **Owner**       | [carlosviniciusananias] |
+| **Repo**        | [codai-voice]           |
+| **Branch Base** | `main`                  |
 
 ---
 
