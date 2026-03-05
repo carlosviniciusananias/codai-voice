@@ -30,10 +30,14 @@ interface GenerateRequestBody {
 
 export async function POST(request: NextRequest) {
   try {
+    const ipHeader =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+
     const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      (request as any).ip ??
-      "anonymous";
+      ipHeader && ipHeader.length > 0
+        ? ipHeader
+        : // Fallback para ambientes onde o IP não está disponível
+          "anonymous";
 
     const { success } = await ratelimit.limit(ip);
 

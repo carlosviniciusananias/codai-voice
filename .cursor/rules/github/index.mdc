@@ -1,0 +1,176 @@
+---
+description: Automação de Commits e Pull Requests no GitHub
+globs: docs/**/*.md
+---
+
+# GitHub Workflow Standard
+
+## Configuração do Repositório
+
+| Atributo        | Valor          |
+| :-------------- | :------------- |
+| **Owner**       | [carlosviniciusananias]  |
+| **Repo**        | [codai-voice] |
+| **Branch Base** | `main`         |
+
+---
+
+## Workflow de PR
+
+### Quando Executar
+
+**Gatilhos:**
+
+- Quando eu disser: `@pr`, `@github`, `finalizar tarefa`, ou `criar pull request`
+
+---
+
+### ETAPA 1: Preparação da Branch
+
+1. **Extrair Issue Key do contexto:**
+   - Buscar em `docs/requirements/[ISSUE-KEY].md` (arquivo mais recente)
+   - Ou pedir ao usuário se não encontrar
+
+2. **Criar branch:**
+
+```
+   Use MCP GitHub: create_branch
+   - owner: [OWNER]
+   - repo: [REPO]
+   - branch: feature/[ISSUE-KEY]
+   - from_branch: main
+```
+
+**Se branch já existir:** Informar ao usuário e perguntar se deseja usar a existente.
+
+---
+
+### ETAPA 2: Commits (Simulado)
+
+**Importante:** Como o MCP GitHub oficial não faz commits diretos de arquivos locais, você deve:
+
+1. **Listar arquivos modificados** que serão commitados
+2. **Gerar mensagem de commit:**
+
+```
+   feat: [Summary do Jira] ([ISSUE-KEY])
+```
+
+3. **Instruir o usuário:**
+
+```
+   Para fazer o commit, execute localmente:
+
+   git checkout feature/[ISSUE-KEY]
+   git add .
+   git commit -m "feat: [Summary] ([ISSUE-KEY])"
+   git push origin feature/[ISSUE-KEY]
+```
+
+**Alternativa (se MCP Git local estiver disponível):**
+
+```
+Use MCP Git: git_create_branch com nome feature/[ISSUE-KEY]
+Use MCP Git: git_commit com mensagem "feat: [Summary] ([ISSUE-KEY])"
+Use MCP Git: git_push
+```
+
+---
+
+### ETAPA 3: Criar Pull Request
+
+1. **Buscar informações do Jira:**
+   - Summary
+   - Description
+   - URL do card
+
+2. **Criar PR:**
+
+```
+   Use MCP GitHub: create_pull_request
+   - owner: [OWNER]
+   - repo: [REPO]
+   - title: "feat: [Summary do Jira]"
+   - head: feature/[ISSUE-KEY]
+   - base: main
+   - body: [Template abaixo]
+```
+
+**Template do corpo do PR:**
+
+```markdown
+## 📋 Descrição
+
+[Resumo técnico do que foi implementado]
+
+## 🔗 Vínculos
+
+- **Jira:** [URL do Card]
+- **Requisitos:** `docs/requirements/[ISSUE-KEY].md`
+- **Plano Técnico:** `docs/planning/[ISSUE-KEY]-plan.md`
+- **Code Review:** `docs/reviews/[ISSUE-KEY]-review.md`
+
+## 🛠️ Alterações Principais
+
+- [Listar arquivos principais modificados]
+
+## ✅ Checklist de Qualidade
+
+- [x] Testes unitários implementados
+- [x] Testes E2E (Playwright) criados
+- [x] Code Review IA concluído
+- [x] Documentação atualizada
+
+## 📊 Métricas
+
+- Arquivos modificados: [X]
+- Linhas adicionadas: [Y]
+- Cobertura de testes: [Z]%
+```
+
+---
+
+### ETAPA 4: Sincronizar com Jira
+
+**Após PR criado com sucesso:**
+
+1. **Obter URL do PR** (retornado pelo MCP GitHub)
+
+2. **Atualizar card no Jira:**
+
+```
+   Use MCP Jira: add_comment
+   - cardId: [ISSUE-KEY]
+   - text: "🔗 **Pull Request Criado:** [URL do PR]"
+```
+
+3. **Adicionar anexo:**
+
+```
+   Use MCP Jira: add_attachment
+   - cardId: [ISSUE-KEY]
+   - url: [URL do PR]
+   - name: "Pull Request #[PR_NUMBER]"
+```
+
+**Mensagem final ao usuário:**
+
+```
+✅ Pull Request criado com sucesso!
+
+🔗 PR: [URL]
+📋 Jira atualizado: [URL do Card]
+
+Próximos passos:
+- Code review humano
+- Testes de CI/CD
+- Merge após aprovação
+```
+
+---
+
+## Comandos Disponíveis
+
+- `@pr` - Cria PR do trabalho atual
+- `@github status` - Verifica status do repositório
+- `@github branches` - Lista branches existentes

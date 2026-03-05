@@ -1,0 +1,197 @@
+---
+description: Gerenciamento de tarefas e sincronização com o Jira
+globs: docs/requirements/*.md, docs/planning/*.md
+---
+
+# Jira Workflow & Sync
+
+## Configuração do Projeto
+
+| Atributo           | Valor                                             |
+| :----------------- | :------------------------------------------------ |
+| **Project Key**    | `CB`                                              |
+| **Board ID**       | `3`                                               |
+| **Status Mapping** | Itens Pendentes → Em andamento → Itens concluídos |
+
+## Workflow de Desenvolvimento
+
+### ETAPA 1: Análise de Card (@workflow [URL])
+
+**Quando eu disser:** `@workflow [URL do Jira]` ou `@workflow [ISSUE-KEY]`
+
+**Execute:**
+
+1. **Extrair dados do Jira:**
+
+```
+   Use MCP Jira: get_card com a URL ou Issue Key
+```
+
+2. **Criar documento de requisitos:**
+   - Arquivo: `docs/requirements/[ISSUE-KEY].md`
+   - Template:
+
+```markdown
+     # [ISSUE-KEY] - [Summary]
+
+     **URL:** [Link do Jira]
+     **Status Atual:** [Status]
+     **Prioridade:** [Prioridade]
+
+     ## Descrição
+     [Description do Jira]
+
+     ## Critérios de Aceite
+     [Acceptance Criteria]
+
+     ## Requisitos Técnicos
+     - [ ] Requisito 1
+     - [ ] Requisito 2
+
+     ## Definição de Pronto
+     - [ ] Código implementado
+     - [ ] Testes unitários (>80%)
+     - [ ] Testes E2E com Playwright
+     - [ ] Code review aprovado
+     - [ ] PR criado e vinculado
+```
+
+3. **Mover card para "Em andamento":**
+
+```
+   Use MCP Jira: move_card
+   - cardId: [ISSUE-KEY]
+   - listId: [ID da lista "Em andamento"]
+```
+
+4. **Adicionar comentário inicial:**
+
+```
+   Use MCP Jira: add_comment
+   - cardId: [ISSUE-KEY]
+   - text: "🚀 Desenvolvimento iniciado - Análise de requisitos concluída"
+```
+
+**Pergunte:** "✅ Análise concluída. Requisitos documentados. Posso criar o plano técnico?"
+
+---
+
+### ETAPA 2: Planejamento Técnico
+
+**Execute:**
+
+1. **Analisar arquitetura do projeto**
+2. **Criar plano técnico:**
+   - Arquivo: `docs/planning/[ISSUE-KEY]-plan.md`
+   - Conteúdo:
+
+```markdown
+     # Plano Técnico - [ISSUE-KEY]
+
+     ## Arquitetura da Solução
+     [Descrição da abordagem]
+
+     ## Arquivos a Criar/Modificar
+     - `arquivo1.tsx` - [Propósito]
+     - `arquivo2.ts` - [Propósito]
+
+     ## Dependências
+     - Biblioteca X (versão Y)
+
+     ## Passo a Passo
+     1. Passo 1
+     2. Passo 2
+
+     ## Riscos e Mitigações
+     - Risco 1 → Mitigação
+```
+
+**Pergunte:** "✅ Plano técnico criado. Aprovado para implementação?"
+
+---
+
+### ETAPA 3: Implementação
+
+**Execute:**
+
+1. **Implementar código** seguindo o plano
+2. **Criar testes unitários**
+3. **Mostrar cada arquivo antes de criar**
+
+**Pergunte após cada arquivo:** "Arquivo criado. Prosseguir?"
+
+---
+
+### ETAPA 4: Code Review
+
+**Execute:**
+
+1. **Revisar código implementado**
+2. **Criar documento de review:**
+   - Arquivo: `docs/reviews/[ISSUE-KEY]-review.md`
+3. **Gerar testes E2E com Playwright**
+
+**Pergunte:** "✅ Review concluído. Criar PR?"
+
+---
+
+### ETAPA 5: Finalizar no Jira
+
+**Quando implementação estiver completa:**
+
+1. **Mover card para "Itens concluídos":**
+
+```
+   Use MCP Jira: move_card
+   - cardId: [ISSUE-KEY]
+   - listId: [ID da lista "Itens concluídos"]
+```
+
+2. **Adicionar comentário de conclusão:**
+
+```
+   Use MCP Jira: add_comment
+   - cardId: [ISSUE-KEY]
+   - text: "
+   ✅ **Implementação Concluída**
+
+   📄 **Documentos:**
+   - Requisitos: docs/requirements/[ISSUE-KEY].md
+   - Plano Técnico: docs/planning/[ISSUE-KEY]-plan.md
+   - Code Review: docs/reviews/[ISSUE-KEY]-review.md
+
+   🔗 **Pull Request:** [será adicionado na próxima etapa]
+
+   📊 **Métricas:**
+   - Arquivos modificados: [X]
+   - Linhas de código: [Y]
+   - Cobertura de testes: [Z]%
+   "
+```
+
+**Importante:** Não adicione o link do PR ainda, pois ele será criado na etapa GitHub.
+
+---
+
+## IDs das Listas (Preencher)
+
+```markdown
+BOARD_ID=3
+LIST_PENDENTES=[obter via get_board_lists]
+LIST_EM_ANDAMENTO=[obter via get_board_lists]
+LIST_CONCLUIDOS=[obter via get_board_lists]
+```
+
+Para obter os IDs, execute uma vez:
+
+```
+Use MCP Jira: get_board_lists com boardId: "3"
+```
+
+---
+
+## Comandos Disponíveis
+
+- `@workflow [URL]` - Inicia análise completa
+- `@jira-move [ISSUE-KEY] [STATUS]` - Move card manualmente
+- `@jira-comment [ISSUE-KEY] [TEXT]` - Adiciona comentário
