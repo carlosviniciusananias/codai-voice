@@ -1,0 +1,48 @@
+---
+alwaysApply: true
+---
+
+# Skill: Jira Validator
+
+## Propósito
+
+Validar se implementação atende requisitos do ticket Jira.
+
+## Processo
+
+1. Parsear descrição e acceptance criteria do Jira
+2. Mapear requisitos para componentes de código
+3. Verificar implementação de cada requisito
+4. Validar casos de teste cobrem requisitos
+
+## Validações
+
+### Requisitos Funcionais
+
+- Cada AC tem implementação correspondente
+- Funcionalidade comporta conforme especificado
+
+### Requisitos Não-Funcionais
+
+- Performance (se especificado)
+- Acessibilidade (se aplicável)
+- Responsividade (para frontend)
+
+## Output
+
+```json
+{
+  "jiraId": "PROJ-123",
+  "requirements": [
+    {
+      "id": "AC-1",
+      "description": "...",
+      "implemented": true,
+      "tested": true,
+      "notes": "..."
+    }
+  ],
+  "coverage": "100%",
+  "approved": true
+}
+```
