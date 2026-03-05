@@ -9,6 +9,7 @@ import { downloadAsTsx, sanitizeFileName } from "./utils/export-utils";
 
 export default function Home() {
   const [transcription, setTranscription] = useState("");
+  const [manualPrompt, setManualPrompt] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -71,6 +72,11 @@ export default function Home() {
     }
   };
 
+  const handleManualGenerate = async () => {
+    if (!manualPrompt.trim()) return;
+    await handleTranscription(manualPrompt);
+  };
+
   return (
     <section
       aria-label="Studio de geração de componentes por voz"
@@ -116,6 +122,42 @@ export default function Home() {
                 onTranscription={handleTranscription}
                 onError={(msg) => setError(msg)}
               />
+
+              <div className="space-y-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                <div className="space-y-2">
+                  <label
+                    htmlFor="manual-prompt"
+                    className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500"
+                  >
+                    Prompt Manual
+                  </label>
+                  <textarea
+                    id="manual-prompt"
+                    placeholder="Descreva o componente aqui..."
+                    className="w-full min-h-[100px] p-3 text-sm rounded-xl border border-zinc-200 bg-white dark:bg-zinc-900 dark:border-zinc-800 focus:ring-2 focus:ring-blue-500 outline-none resize-none transition-all"
+                    value={manualPrompt}
+                    onChange={(e) => setManualPrompt(e.target.value.slice(0, 500))}
+                    maxLength={500}
+                  />
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] text-zinc-400">
+                      {manualPrompt.length}/500 caracteres
+                    </span>
+                    <Button
+                      size="sm"
+                      onClick={handleManualGenerate}
+                      disabled={!manualPrompt.trim() || isLoading}
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Code2 className="h-3 w-3" />
+                      )}
+                      Gerar componente
+                    </Button>
+                  </div>
+                </div>
+              </div>
 
               {transcription && (
                 <div className="space-y-2">
