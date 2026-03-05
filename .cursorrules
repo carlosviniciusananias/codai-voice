@@ -1,24 +1,44 @@
 # AI Development Workflow
 
-Este projeto segue workflows estruturados para desenvolvimento.
+## Comandos
 
-## Comandos Principais
+### Workflows
 
-- `@workflow [URL]` - Workflow completo (análise → implementação → PR)
-- `@pr` - Criar Pull Request
-- `@review` - Code review
-- `@tests` - Gerar testes E2E
+- `@workflow [URL]` - Dev → QA → Review (automático)
+- `@workflow:dev [URL]` - Apenas dev (sem validação)
+- `@qa [JIRA-ID]` - Executar QA Agent
+- `@reviewer [PR]` - Executar Code Reviewer Agent
 
-## Configuração
+### Legado
 
-Veja `.cursor/rules/jira/index.mdc` para detalhes de Jira.
-Veja `.cursor/rules/github/index.mdc` para detalhes de GitHub.
-Veja `.cursor/rules/code/index.mdc` para padrões de código.
-Veja `.cursor/rules/playwright/index.mdc` para executar testes.
+- `@pr` - Criar PR manual
+- `@review` - Review manual
+- `@tests` - Gerar testes manual
 
-## Comportamento Geral
+## Config
 
-- SEMPRE pergunte antes de avançar
-- SEMPRE mostre arquivos antes de criar
-- SEMPRE use MCPs para integrar com Jira e GitHub
-- NUNCA apague arquivos sem confirmar
+**Rules:** `.cursor/rules/[jira|github|code|playwright]/index.mdc`
+**Agents:** `.cursor/agents/[workflow|qa-agent|code-reviewer-agent]`
+
+## Comportamento
+
+- Sempre pergunte antes de avançar
+- Mostre arquivos antes de criar
+- Use MCPs para Jira/GitHub
+- Nunca apague sem confirmar
+
+---
+
+## Workflow Automático (@workflow)
+
+Quando usar `@workflow [URL]`:
+
+1. Leia `.cursor/agents/workflow.mdc` para orquestração
+2. Execute fases na sequência
+3. Pergunte entre cada fase
+4. Salve contexto em `.cursor/workflow-context.json`
+
+Agentes disponíveis:
+
+- QA: `.cursor/agents/qa-agent/agent.mdc`
+- Reviewer: `.cursor/agents/code-reviewer-agent/agent.mdc`

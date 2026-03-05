@@ -1,0 +1,71 @@
+---
+alwaysApply: true
+---
+
+# Workflow Orchestration
+
+Coordena execução sequencial de agentes.
+
+## Fases
+
+### 1. Development
+
+- Usa rules: `jira`, `github`, `code`
+- Output: Branch + PR
+- Pergunta: "Continue para QA?"
+
+### 2. QA Agent
+
+- Carrega: `.cursor/agents/qa-agent/agent.mdc`
+- Executa: gera testes → executa → mede coverage
+- Aprovação: coverage ≥ 80% + tests passing
+- Se falhar: volta para fase 1
+- Se passar: pergunta "Continue para Review?"
+
+### 3. Code Reviewer Agent
+
+- Carrega: `.cursor/agents/dev-agent/agent.mdc`
+- Executa: analisa código → scan segurança → comenta GitHub
+- Aprovação: score ≥ 70 + sem critical/high issues
+- Se reprovar: volta para fase 1
+- Se aprovar: "Ready to merge"
+
+## Context File
+
+Salve estado em `.cursor/workflow-context.json`:
+
+```json
+{
+  "jiraId": "PROJ-123",
+  "branch": "feature/login",
+  "prNumber": 456,
+  "phase": "qa|review|complete",
+  "qaResult": { "status": "approved", "coverage": 87 },
+  "reviewResult": { "status": "approved", "score": 82 }
+}
+```
+
+## Comandos Individuais
+
+**@qa [JIRA-ID]:**
+
+1. Carrega `.cursor/agents/qa-agent/agent.mdc`
+2. Executa apenas fase QA
+3. Salva `reports/qa-[ID].json`
+
+**@reviewer [PR]:**
+
+1. Carrega `.cursor/agents/dev-agent/agent.mdc`
+2. Executa apenas fase Review
+3. Comenta no GitHub
+4. Salva `reports/review-[PR].json`
+
+## Config
+
+Leia `.cursor/agents/config.mdc` para thresholds customizados.
+
+## Error Handling
+
+- Max 3 retries por fase
+- Notifica dev via Jira comment
+- Salva logs em `reports/errors.log`

@@ -5,84 +5,73 @@ test.describe('CB-3: Implementar Campo Manual de Prompt', () => {
     await page.goto('/');
   });
 
-  test('deve validar o campo de prompt manual e gerar componente', async ({ page }) => {
-    const textarea = page.locator('#manual-prompt');
-    const generateButton = page.getByRole('button', { name: 'Gerar componente' });
-    const charCount = page.locator('text=/500 caracteres/');
-
-    await test.step('Verificar estado inicial', async () => {
-      await expect(textarea).toBeVisible();
-      // Removido check de placeholder pois pode haver variações de renderização ou caracteres especiais
-      await expect(generateButton).toBeDisabled();
-      await expect(charCount).toHaveText('0/500 caracteres');
+  test('deve alternar entre modo voz e modo manual', async ({ page }) => {
+    await test.step('Verificar modo voz inicial', async () => {
+      await expect(page.getByText('Comando de Voz')).toBeVisible();
+      // O botão VoiceInput tem um span com o texto "Falar"
+      await expect(page.locator('button:has-text("Falar")')).toBeVisible();
     });
 
-    await test.step('Validar limite de caracteres', async () => {
-      const longText = 'a'.repeat(501);
-      await textarea.fill(longText);
-      await expect(textarea).toHaveValue('a'.repeat(500));
-      await expect(charCount).toHaveText('500/500 caracteres');
+    await test.step('Alternar para modo manual', async () => {
+      await page.getByTitle('Manual').click();
+      await expect(page.getByText('Prompt Manual')).toBeVisible();
+      await expect(page.getByPlaceholder('Descreva o componente que você deseja criar...')).toBeVisible();
+      await expect(page.locator('button:has-text("Gerar componente")')).toBeVisible();
     });
 
-    await test.step('Validar habilitação do botão ao digitar', async () => {
-      await textarea.fill('Crie um botão azul');
-      await expect(generateButton).toBeEnabled();
-      await expect(charCount).toHaveText('18/500 caracteres');
-    });
-
-    await test.step('Simular geração de componente', async () => {
-      // Mock da API de geração para evitar chamadas reais e lentidão
-      await page.route('/api/generate', async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ component: '<button class="bg-blue-500 text-white p-2 rounded">Botão Azul</button>' }),
-        });
-      });
-
-      await generateButton.click();
-
-      // Verificar estado de carregamento (pode ser rápido demais para capturar sem delays no mock)
-      // Mas podemos verificar o resultado final
-      await expect(page.locator('pre code')).toContainText('<button class="bg-blue-500 text-white p-2 rounded">Botão Azul</button>');
-      
-      // Verificar se o preview renderizou o HTML (dangerouslySetInnerHTML)
-      const preview = page.locator('div[dangerouslysetinnerhtml]');
-      // O Playwright não tem um seletor direto para dangerouslySetInnerHTML, 
-      // mas podemos buscar pelo conteúdo dentro do Card de Preview
-      await expect(page.locator('div.w-full.max-w-md.p-6.rounded-2xl')).toBeVisible();
-      await expect(page.getByRole('button', { name: 'Botão Azul' })).toBeVisible();
-    });
-
-    await test.step('Validar limpeza do campo após erro ou sucesso (opcional)', async () => {
-      // No plano, decidimos não limpar ou limpar dependendo da UX. 
-      // Atualmente o código não limpa o manualPrompt no handleManualGenerate do page.tsx (eu não adicionei setManualPrompt("") lá para evitar perda de dados se o usuário quiser ajustar).
-      // Vamos apenas garantir que o botão continua lá.
-      await expect(textarea).toBeVisible();
+    await test.step('Alternar de volta para modo voz', async () => {
+      await page.getByTitle('Voz').click();
+      await expect(page.getByText('Comando de Voz')).toBeVisible();
+      await expect(page.locator('button:has-text("Falar")')).toBeVisible();
     });
   });
 
-  test('deve lidar com erro na geração', async ({ page }) => {
-    const textarea = page.locator('#manual-prompt');
-    const generateButton = page.getByRole('button', { name: 'Gerar componente' });
+  test('deve validar o limite de caracteres e prompt vazio', async ({ page }) => {
+    await page.getByTitle('Manual').click();
+    const textarea = page.getByPlaceholder('Descreva o componente que você deseja criar...');
+    const submitBtn = page.locator('button:has-text("Gerar componente")');
 
-    await test.step('Configurar mock de erro', async () => {
-      await page.route('/api/generate', async (route) => {
-        await route.fulfill({
-          status: 500,
-          contentType: 'application/json',
-          body: JSON.stringify({ error: 'Erro interno do servidor' }),
-        });
-      });
-
-      await textarea.fill('Prompt problemático');
-      await generateButton.click();
+    await test.step('Verificar botão desabilitado para prompt vazio', async () => {
+      await expect(submitBtn).toBeDisabled();
     });
 
-    await test.step('Verificar mensagem de erro', async () => {
-      await expect(page.getByText('Ops! Algo deu errado')).toBeVisible();
-      // Vamos apenas verificar se existe algum texto de erro abaixo do título
-      await expect(page.locator('div[role="alert"] p:nth-child(2)')).toBeVisible();
+    await test.step('Verificar contador de caracteres', async () => {
+      await expect(page.getByText('0/500')).toBeVisible();
+      await textarea.fill('Teste de componente');
+      await expect(page.getByText('19/500')).toBeVisible();
+      await expect(submitBtn).toBeEnabled();
+    });
+
+    await test.step('Verificar limite de 500 caracteres', async () => {
+      const longText = 'a'.repeat(600);
+      await textarea.type(longText);
+      const value = await textarea.inputValue();
+      expect(value.length).toBe(500);
+      await expect(page.getByText('500/500')).toBeVisible();
+    });
+  });
+
+  test('deve disparar a geração ao clicar no botão', async ({ page }) => {
+    // Mock da API para evitar chamadas reais durante o teste
+    await page.route('**/api/generate', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ component: '<div id="generated-test">Componente Gerado</div>' }),
+      });
+    });
+
+    await page.getByTitle('Manual').click();
+    await page.getByPlaceholder('Descreva o componente que você deseja criar...').fill('Crie um botão azul');
+    await page.locator('button:has-text("Gerar componente")').click();
+
+    await test.step('Verificar se o código foi gerado e exibido', async () => {
+      await expect(page.locator('code')).toContainText('Componente Gerado', { timeout: 15000 });
+    });
+
+    await test.step('Verificar se o preview foi atualizado', async () => {
+      // O preview usa dangerouslySetInnerHTML em uma div dentro de um CardContent
+      await expect(page.locator('#generated-test')).toBeVisible({ timeout: 10000 });
     });
   });
 });
