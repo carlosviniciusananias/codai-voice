@@ -2,7 +2,7 @@
 
 Este projeto usa agentes especializados para validação automática.
 
-## 🎯 Comandos e Ações
+## Comandos e Ações
 
 ### @workflow [URL_JIRA]
 
@@ -194,7 +194,7 @@ Usuário: Sim
 19. [Move card para "Itens concluídos" via MCP Jira]
 20. [Comenta conclusão no Jira via MCP]
 21. [Adiciona label "ready-to-merge" no GitHub via MCP]
-22. "🎉 Workflow completo! PR #456 pronto para merge."
+22. "Workflow completo! PR #456 pronto para merge."
 
 --- CENÁRIO A2: QA FALHA ---
 19. [Move card de volta para "Em andamento" via MCP Jira]

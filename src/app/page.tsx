@@ -3,6 +3,7 @@
 import { useState } from "react";
 import VoiceInput from "./components/VoiceInput";
 import PromptInput from "./components/PromptInput";
+import { PreviewSandbox } from "../components/PreviewSandbox";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare } from "lucide-react";
 import { Button } from "./components/ui/button";
@@ -250,22 +251,19 @@ export default function Home() {
                   <CardTitle>Preview</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="flex-1 flex items-center justify-center p-8 bg-zinc-50/30 dark:bg-zinc-900/10">
+              <CardContent className="flex-1 p-0 overflow-hidden bg-zinc-50/30 dark:bg-zinc-900/10">
                 {generatedCode ? (
-                  <div className="w-full h-full min-h-[300px] flex items-center justify-center">
-                    <div
-                      className="w-full max-w-md p-6 rounded-2xl bg-white dark:bg-zinc-900 shadow-xl border border-zinc-200 dark:border-zinc-800 transition-all duration-500 animate-in fade-in zoom-in-95"
-                      dangerouslySetInnerHTML={{ __html: generatedCode }}
-                    />
-                  </div>
+                  <PreviewSandbox code={generatedCode} className="border-none rounded-none" />
                 ) : (
-                  <div className="text-center space-y-3 opacity-40">
-                    <div className="mx-auto w-12 h-12 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
-                      <Eye className="h-6 w-6" />
+                  <div className="flex items-center justify-center w-full h-full min-h-[400px]">
+                    <div className="text-center space-y-3 opacity-40">
+                      <div className="mx-auto w-12 h-12 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
+                        <Eye className="h-6 w-6" />
+                      </div>
+                      <p className="text-sm font-medium text-zinc-500">
+                        O preview aparecerá aqui
+                      </p>
                     </div>
-                    <p className="text-sm font-medium text-zinc-500">
-                      O preview aparecerá aqui
-                    </p>
                   </div>
                 )}
               </CardContent>
