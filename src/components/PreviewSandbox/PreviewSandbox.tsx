@@ -11,7 +11,7 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const generateSandboxHtml = (userCode: string) => {
+  const generateSandboxHtml = () => {
     return `
       <!DOCTYPE html>
       <html lang="en">
@@ -40,20 +40,21 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className 
                 const oldScripts = document.querySelectorAll('script[data-sandbox]');
                 oldScripts.forEach(s => s.remove());
 
+                const userCode = event.data.code.trim();
+                
+                // Se o código começa com <, assumimos que é HTML e injetamos no root
+                if (userCode.startsWith('<')) {
+                  if (root) root.innerHTML = userCode;
+                  return;
+                }
+
                 const script = document.createElement('script');
                 script.type = 'module';
                 script.setAttribute('data-sandbox', 'true');
-                script.textContent = \`
-                  try {
-                    \${event.data.code}
-                  } catch (err) {
-                    window.parent.postMessage({ 
-                      type: 'error', 
-                      message: err.message,
-                      stack: err.stack 
-                    }, '*');
-                  }
-                \`;
+                
+                // Injetar o código diretamente. O postMessage já lida com a transferência da string.
+                script.textContent = 'try { ' + userCode + ' } catch (err) { window.parent.postMessage({ type: "error", message: err.message, stack: err.stack }, "*"); }';
+                
                 document.body.appendChild(script);
               } catch (err) {
                 window.parent.postMessage({ 
@@ -82,7 +83,7 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className 
         </script>
       </body>
       </html>
-    \`;
+    `;
   };
 
   useEffect(() => {
@@ -103,12 +104,12 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className 
       if (iframeRef.current && iframeRef.current.contentWindow) {
         iframeRef.current.contentWindow.postMessage({ type: 'render', code }, '*');
       }
-    }, 100); // Pequeno delay para garantir que o iframe carregou o srcDoc inicial
+    }, 100);
     return () => clearTimeout(timeoutId);
   }, [code]);
 
   return (
-    <div className={`relative w-full h-full min-h-[400px] border rounded-lg overflow-hidden bg-white ${className}`}>
+    <div className={`relative w-full h-full min-h-[400px] border rounded-lg overflow-hidden bg-white ${className || ''}`}>
       {error && (
         <div className="absolute top-0 left-0 right-0 p-4 bg-red-50 border-b border-red-200 text-red-600 z-10 text-sm">
           <strong>Render Error:</strong> {error}
@@ -118,7 +119,7 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className 
         ref={iframeRef}
         title="Preview Sandbox"
         sandbox="allow-scripts"
-        srcDoc={generateSandboxHtml('')}
+        srcDoc={generateSandboxHtml()}
         className="w-full h-full border-none"
       />
     </div>
