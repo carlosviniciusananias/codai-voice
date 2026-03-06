@@ -5,9 +5,10 @@ import VoiceInput from "./components/VoiceInput";
 import PromptInput from "./components/PromptInput";
 import { PreviewSandbox } from "../components/PreviewSandbox";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
-import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare } from "lucide-react";
+import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare, Lightbulb } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { downloadAsTsx, sanitizeFileName } from "./utils/export-utils";
+import { ExplanationSidebar } from "./components/ExplanationSidebar";
 
 export default function Home() {
   const [transcription, setTranscription] = useState("");
@@ -17,6 +18,12 @@ export default function Home() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<"voice" | "manual">("voice");
+
+  // Explain-to-Me States
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [explanation, setExplanation] = useState<string | null>(null);
+  const [isExplaining, setIsExplaining] = useState(false);
+  const [explanationError, setExplanationError] = useState<string | null>(null);
 
   const handleExport = () => {
     if (!generatedCode) return;
@@ -35,10 +42,51 @@ export default function Home() {
     }
   };
 
+  const handleExplain = async () => {
+    if (!generatedCode) return;
+    
+    setIsSidebarOpen(true);
+    setIsExplaining(true);
+    setExplanationError(null);
+    
+    try {
+      const response = await fetch("/api/explain", {
+        method: "POST",
+        body: JSON.stringify({ 
+          code: generatedCode,
+          prompt: transcription 
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao gerar explicação.");
+      }
+
+      const data = (await response.json()) as {
+        explanation?: string;
+        error?: string;
+      };
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setExplanation(data.explanation ?? "");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Erro desconhecido ao gerar explicação.";
+      setExplanationError(message);
+    } finally {
+      setIsExplaining(false);
+    }
+  };
+
   const handleGenerate = async (text: string) => {
     setTranscription(text);
     setIsLoading(true);
     setError(null);
+    setExplanation(null); // Reset explanation when new code is generated
 
     try {
       const response = await fetch("/api/generate", {
@@ -246,9 +294,31 @@ export default function Home() {
 
             <Card className="flex flex-col border-zinc-200/60 dark:border-zinc-800/60 shadow-lg">
               <CardHeader className="border-b border-zinc-100 dark:border-zinc-800 py-3">
-                <div className="flex items-center gap-2">
-                  <Eye className="h-4 w-4 text-zinc-500" />
-                  <CardTitle>Preview</CardTitle>
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-2">
+                    <Eye className="h-4 w-4 text-zinc-500" />
+                    <CardTitle>Preview</CardTitle>
+                  </div>
+                  {generatedCode && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={`h-7 px-2 text-[10px] gap-1.5 transition-all duration-300 ${
+                        isExplaining 
+                          ? "border-amber-500 text-amber-600 bg-amber-50" 
+                          : "border-zinc-200 dark:border-zinc-700 hover:border-amber-400 hover:text-amber-600 dark:hover:text-amber-400"
+                      }`}
+                      onClick={handleExplain}
+                      disabled={isExplaining}
+                    >
+                      {isExplaining ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Lightbulb className="h-3 w-3" />
+                      )}
+                      {isExplaining ? "Explicando..." : "Explain-to-Me"}
+                    </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="flex-1 p-0 overflow-hidden bg-zinc-50/30 dark:bg-zinc-900/10">
@@ -271,6 +341,15 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <ExplanationSidebar 
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        explanation={explanation}
+        isLoading={isExplaining}
+        error={explanationError}
+      />
     </section>
+
   );
 }
