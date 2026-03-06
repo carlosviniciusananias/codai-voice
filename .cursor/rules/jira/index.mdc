@@ -7,11 +7,11 @@ globs: docs/requirements/*.md, docs/planning/*.md
 
 ## Configuração do Projeto
 
-| Atributo           | Valor                                             |
-| :----------------- | :------------------------------------------------ |
-| **Project Key**    | `CB`                                              |
-| **Board ID**       | `3`                                               |
-| **Status Mapping** | Itens Pendentes → Em andamento → Itens concluídos |
+| Atributo           | Valor                                                                    |
+| :----------------- | :----------------------------------------------------------------------- |
+| **Project Key**    | `CB`                                                                     |
+| **Board ID**       | `3`                                                                      |
+| **Status Mapping** | Itens Pendentes → Em andamento → Em revisão qualidade → Itens concluídos |
 
 ## Workflow de Desenvolvimento
 
@@ -53,6 +53,7 @@ globs: docs/requirements/*.md, docs/planning/*.md
      - [ ] Testes unitários (>80%)
      - [ ] Testes E2E com Playwright
      - [ ] Code review aprovado
+     - [ ] QA Agent validado
      - [ ] PR criado e vinculado
 ```
 
@@ -69,10 +70,10 @@ globs: docs/requirements/*.md, docs/planning/*.md
 ```
    Use MCP Jira: add_comment
    - cardId: [ISSUE-KEY]
-   - text: "🚀 Desenvolvimento iniciado - Análise de requisitos concluída"
+   - text: "🔨 Desenvolvimento iniciado - Análise de requisitos concluída"
 ```
 
-**Pergunte:** "✅ Análise concluída. Requisitos documentados. Posso criar o plano técnico?"
+**Pergunte:** "Análise concluída. Requisitos documentados. Posso criar o plano técnico?"
 
 ---
 
@@ -106,7 +107,7 @@ globs: docs/requirements/*.md, docs/planning/*.md
      - Risco 1 → Mitigação
 ```
 
-**Pergunte:** "✅ Plano técnico criado. Aprovado para implementação?"
+**Pergunte:** "Plano técnico criado. Aprovado para implementação?"
 
 ---
 
@@ -120,26 +121,116 @@ globs: docs/requirements/*.md, docs/planning/*.md
 
 **Pergunte após cada arquivo:** "Arquivo criado. Prosseguir?"
 
+**Ao finalizar implementação:**
+
+```
+Use MCP Jira: add_comment
+- cardId: [ISSUE-KEY]
+- text: " Implementação concluída. Código pronto para revisão."
+```
+
 ---
 
-### ETAPA 4: Code Review
+### ETAPA 4: Code Review (Automático via Code Reviewer Agent)
+
+**Quando Code Reviewer Agent finalizar:**
+
+**Card permanece em "Em andamento" durante review.**
 
 **Execute:**
 
-1. **Revisar código implementado**
-2. **Criar documento de review:**
+1. **Criar documento de review:**
    - Arquivo: `docs/reviews/[ISSUE-KEY]-review.md`
-3. **Gerar testes E2E com Playwright**
 
-**Pergunte:** "✅ Review concluído. Criar PR?"
+2. **Se Review REPROVOU (changes requested):**
+
+```
+   Use MCP Jira: add_comment
+   - cardId: [ISSUE-KEY]
+   - text: "
+   **Code Review - Mudanças Solicitadas**
+
+   **Score:** [X]/100
+   **Issues encontrados:** [Y]
+
+   Issues críticos: [Z]
+   Issues médios: [W]
+
+   Review detalhado: docs/reviews/[ISSUE-KEY]-review.md
+   Comentários no GitHub: [PR_URL]
+
+   Card permanece em 'Em andamento' até correções
+   "
+```
+
+**Card MANTÉM em "Em andamento"** - Não move.
+
+3. **Se Review APROVADO:**
+
+```
+   Use MCP Jira: move_card
+   - cardId: [ISSUE-KEY]
+   - listId: [ID da lista "Em revisão qualidade"]
+```
+
+```
+   Use MCP Jira: add_comment
+   - cardId: [ISSUE-KEY]
+   - text: "
+    **Code Review Aprovado**
+
+   **Score:** [X]/100
+   **Issues encontrados:** [Y] (todos baixa severidade)
+
+   📄 Review detalhado: docs/reviews/[ISSUE-KEY]-review.md
+   💬 Comentários no GitHub: [PR_URL]
+
+   ➡️ Movido para 'Em revisão qualidade' para validação do QA Agent
+   "
+```
+
+**Card MOVE para "Em revisão qualidade"**
 
 ---
 
-### ETAPA 5: Finalizar no Jira
+### ETAPA 5: Validação QA (Automático via QA Agent)
 
-**Quando implementação estiver completa:**
+**Card está em "Em revisão qualidade".**
 
-1. **Mover card para "Itens concluídos":**
+**Quando QA Agent finalizar:**
+
+**Execute:**
+
+1. **Se QA FALHOU:**
+
+```
+   Use MCP Jira: move_card
+   - cardId: [ISSUE-KEY]
+   - listId: [ID da lista "Em andamento"]
+```
+
+```
+   Use MCP Jira: add_comment
+   - cardId: [ISSUE-KEY]
+   - text: "
+   **QA Falhou - Retornando para Desenvolvimento**
+
+   **Coverage:** [X]% (meta: 80%)
+   **Testes:** [Y]/[Z] passing
+
+   **Problemas encontrados:**
+   - [Problema 1]
+   - [Problema 2]
+
+   Relatório completo: reports/qa-[ISSUE-KEY].json
+
+   Card movido de volta para 'Em andamento'
+   "
+```
+
+**Card VOLTA para "Em andamento"** ⬅️
+
+2. **Se QA APROVADO:**
 
 ```
    Use MCP Jira: move_card
@@ -147,38 +238,69 @@ globs: docs/requirements/*.md, docs/planning/*.md
    - listId: [ID da lista "Itens concluídos"]
 ```
 
-2. **Adicionar comentário de conclusão:**
-
 ```
    Use MCP Jira: add_comment
    - cardId: [ISSUE-KEY]
    - text: "
-   ✅ **Implementação Concluída**
+   **Implementação Concluída e Validada**
 
    📄 **Documentos:**
    - Requisitos: docs/requirements/[ISSUE-KEY].md
    - Plano Técnico: docs/planning/[ISSUE-KEY]-plan.md
    - Code Review: docs/reviews/[ISSUE-KEY]-review.md
+   - QA Report: reports/qa-[ISSUE-KEY].json
 
-   🔗 **Pull Request:** [será adicionado na próxima etapa]
+   🔗 **Pull Request:** [PR_URL]
 
-   📊 **Métricas:**
+   **Métricas:**
    - Arquivos modificados: [X]
    - Linhas de código: [Y]
    - Cobertura de testes: [Z]%
+   - Score Code Review: [W]/100
+
+   **Validações:**
+   - Code Review: Aprovado
+   - QA Tests: [N]/[N] passing
+   - Coverage: [Z]% (meta: 80%)
    "
 ```
 
-**Importante:** Não adicione o link do PR ainda, pois ele será criado na etapa GitHub.
+**Card MOVE para "Itens concluídos"**
 
 ---
 
-## IDs das Listas (Preencher)
+## Fluxo de Movimentação de Cards
+
+```mermaid
+graph LR
+    A[Itens Pendentes] -->|@workflow| B[Em andamento]
+    B -->|Dev completo| B
+    B -->|Review aprovado| C[Em revisão qualidade]
+    C -->|QA aprovado| D[Itens concluídos]
+    C -->|QA falhou| B
+    B -->|Review falhou| B
+```
+
+### Regras de Movimentação:
+
+| De                   | Para                  | Trigger                    |
+| :------------------- | :-------------------- | :------------------------- |
+| Itens Pendentes      | Em andamento          | `@workflow` executado      |
+| Em andamento         | Em andamento (mantém) | Dev implementação completa |
+| Em andamento         | Em andamento (mantém) | Code Review REPROVOU       |
+| Em andamento         | Em revisão qualidade  | Code Review APROVADO       |
+| Em revisão qualidade | Itens concluídos      | QA Agent APROVADO          |
+| Em revisão qualidade | Em andamento          | QA Agent FALHOU            |
+
+---
+
+## IDs das Listas
 
 ```markdown
 BOARD_ID=3
 Itens Pendentes=[obter via get_board_lists]
 Em andamento=[obter via get_board_lists]
+Em revisão qualidade=[obter via get_board_lists]
 Itens concluídos=[obter via get_board_lists]
 ```
 
@@ -188,10 +310,24 @@ Para obter os IDs, execute uma vez:
 Use MCP Jira: get_board_lists com boardId: "3"
 ```
 
+Depois atualize esta seção com os IDs reais.
+
 ---
 
 ## Comandos Disponíveis
 
-- `@workflow [URL]` - Inicia análise completa
+- `@workflow [URL]` - Inicia workflow completo (Dev → Review → QA)
 - `@jira-move [ISSUE-KEY] [STATUS]` - Move card manualmente
 - `@jira-comment [ISSUE-KEY] [TEXT]` - Adiciona comentário
+- `@jira-status [ISSUE-KEY]` - Consulta status atual do card
+
+---
+
+## Observações Importantes
+
+1. **Card só avança para "Em revisão qualidade"** quando Code Review APROVAR
+2. **Card retorna para "Em andamento"** se QA falhar
+3. **Card PERMANECE em "Em andamento"** se Code Review reprovar
+4. **Comentários automáticos** documentam cada decisão/transição
+5. **Code Reviewer Agent** decide se move para "Em revisão qualidade"
+6. **QA Agent** decide se move para "Itens concluídos" ou volta para "Em andamento"

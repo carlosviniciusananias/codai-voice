@@ -10,7 +10,6 @@ import { downloadAsTsx, sanitizeFileName } from "./utils/export-utils";
 
 export default function Home() {
   const [transcription, setTranscription] = useState("");
-  const [manualPrompt, setManualPrompt] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -43,7 +42,7 @@ export default function Home() {
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text: text.trim().slice(0, 500) }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -74,11 +73,6 @@ export default function Home() {
     }
   };
 
-  const handleManualGenerate = async () => {
-    if (!manualPrompt.trim()) return;
-    await handleTranscription(manualPrompt);
-  };
-
   return (
     <section
       aria-label="Studio de geração de componentes por voz"
@@ -86,9 +80,6 @@ export default function Home() {
     >
       <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl text-zinc-900 dark:text-zinc-50">
-            Studio Studio
-          </h1>
           <p className="max-w-2xl text-base text-zinc-500 dark:text-zinc-400">
             Transforme suas ideias em realidade. Descreva o componente e veja a mágica acontecer em tempo real.
           </p>
@@ -161,42 +152,6 @@ export default function Home() {
                   disabled={isLoading}
                 />
               )}
-
-              <div className="space-y-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="manual-prompt"
-                    className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500"
-                  >
-                    Prompt Manual
-                  </label>
-                  <textarea
-                    id="manual-prompt"
-                    placeholder="Descreva o componente aqui..."
-                    className="w-full min-h-[100px] p-3 text-sm rounded-xl border border-zinc-200 bg-white dark:bg-zinc-900 dark:border-zinc-800 focus:ring-2 focus:ring-blue-500 outline-none resize-none transition-all"
-                    value={manualPrompt}
-                    onChange={(e) => setManualPrompt(e.target.value.slice(0, 500))}
-                    maxLength={500}
-                  />
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-zinc-400">
-                      {manualPrompt.length}/500 caracteres
-                    </span>
-                    <Button
-                      size="sm"
-                      onClick={handleManualGenerate}
-                      disabled={!manualPrompt.trim() || isLoading}
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <Code2 className="h-3 w-3" />
-                      )}
-                      Gerar componente
-                    </Button>
-                  </div>
-                </div>
-              </div>
 
               {transcription && (
                 <div className="space-y-2">

@@ -23,7 +23,7 @@ export default function PromptInput({ onGenerate, disabled }: PromptInputProps) 
 
   const handleSubmit = () => {
     const trimmedPrompt = prompt.trim();
-    if (trimmedPrompt) {
+    if (trimmedPrompt && trimmedPrompt.length <= MAX_CHARS) {
       onGenerate(trimmedPrompt);
     }
   };
