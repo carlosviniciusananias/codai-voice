@@ -7,7 +7,7 @@ test.describe('CB-1: Implementação de Design Pattern', () => {
 
   test('deve exibir os elementos principais da nova interface', async ({ page }) => {
     await test.step('Verificar Navbar e Logo', async () => {
-      await expect(page.getByText('codaí voice')).toBeVisible();
+      await expect(page.getByText('codaí voice', { exact: true })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Studio' })).toBeVisible();
     });
 
@@ -27,7 +27,7 @@ test.describe('CB-1: Implementação de Design Pattern', () => {
     });
 
     await test.step('Verificar Card de Preview', async () => {
-      await expect(page.getByText('Preview')).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible();
       await expect(page.getByText('O preview aparecerá aqui')).toBeVisible();
     });
 
@@ -40,7 +40,7 @@ test.describe('CB-1: Implementação de Design Pattern', () => {
   test('deve ser responsivo (mobile)', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     
-    await expect(page.getByText('codaí voice')).toBeVisible();
+    await expect(page.getByText('codaí voice', { exact: true })).toBeVisible();
     // O menu de navegação pode mudar ou ser escondido dependendo da implementação mobile
     // Mas o Studio Studio deve continuar visível
     await expect(page.getByRole('heading', { name: 'Studio Studio' })).toBeVisible();

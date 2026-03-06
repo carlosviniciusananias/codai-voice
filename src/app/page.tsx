@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import VoiceInput from "./components/VoiceInput";
+import PromptInput from "./components/PromptInput";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
-import { Loader2, Mic, Code2, Eye, Download, CheckCircle2 } from "lucide-react";
+import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { downloadAsTsx, sanitizeFileName } from "./utils/export-utils";
 
@@ -14,6 +15,7 @@ export default function Home() {
   const [isExporting, setIsExporting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [inputMode, setInputMode] = useState<"voice" | "manual">("voice");
 
   const handleExport = () => {
     if (!generatedCode) return;
@@ -32,7 +34,7 @@ export default function Home() {
     }
   };
 
-  const handleTranscription = async (text: string) => {
+  const handleGenerate = async (text: string) => {
     setTranscription(text);
     setIsLoading(true);
     setError(null);
@@ -40,7 +42,7 @@ export default function Home() {
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text: text.trim().slice(0, 500) }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -78,9 +80,6 @@ export default function Home() {
     >
       <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl text-zinc-900 dark:text-zinc-50">
-            Studio Studio
-          </h1>
           <p className="max-w-2xl text-base text-zinc-500 dark:text-zinc-400">
             Transforme suas ideias em realidade. Descreva o componente e veja a mágica acontecer em tempo real.
           </p>
@@ -106,16 +105,53 @@ export default function Home() {
         <div className="flex flex-col gap-6">
           <Card className="flex flex-col shadow-lg border-zinc-200/60 dark:border-zinc-800/60">
             <CardHeader className="border-b border-zinc-100 dark:border-zinc-800 pb-4">
-              <div className="flex items-center gap-2">
-                <Mic className="h-4 w-4 text-zinc-500" />
-                <CardTitle>Comando de Voz</CardTitle>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {inputMode === "voice" ? (
+                    <Mic className="h-4 w-4 text-zinc-500" />
+                  ) : (
+                    <MessageSquare className="h-4 w-4 text-zinc-500" />
+                  )}
+                  <CardTitle>{inputMode === "voice" ? "Comando de Voz" : "Prompt Manual"}</CardTitle>
+                </div>
+                <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg">
+                  <button
+                    onClick={() => setInputMode("voice")}
+                    className={`p-1.5 rounded-md transition-all ${
+                      inputMode === "voice"
+                        ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
+                        : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                    }`}
+                    title="Voz"
+                  >
+                    <Mic className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    onClick={() => setInputMode("manual")}
+                    className={`p-1.5 rounded-md transition-all ${
+                      inputMode === "manual"
+                        ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
+                        : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                    }`}
+                    title="Manual"
+                  >
+                    <MessageSquare className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
-              <VoiceInput
-                onTranscription={handleTranscription}
-                onError={(msg) => setError(msg)}
-              />
+              {inputMode === "voice" ? (
+                <VoiceInput
+                  onTranscription={handleGenerate}
+                  onError={(msg) => setError(msg)}
+                />
+              ) : (
+                <PromptInput
+                  onGenerate={handleGenerate}
+                  disabled={isLoading}
+                />
+              )}
 
               {transcription && (
                 <div className="space-y-2">

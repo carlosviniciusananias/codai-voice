@@ -1,0 +1,20 @@
+{
+  "jiraId": "CB-3",
+  "branch": "feature/CB-3",
+  "prNumber": 6,
+  "phase": "complete",
+  "qaResult": {
+    "status": "approved",
+    "tests": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0
+    },
+    "report": "reports/qa-CB-3.json"
+  },
+  "reviewResult": {
+    "status": "approved",
+    "score": 95,
+    "comment": "https://github.com/carlosviniciusananias/codai-voice/pull/6#issuecomment-4008185874"
+  }
+}

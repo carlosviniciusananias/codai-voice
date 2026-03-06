@@ -1,0 +1,199 @@
+---
+alwaysApply: true
+---
+
+# Skill: GitHub Commenter
+
+## Propósito
+
+Interagir com GitHub API para comentar em PRs.
+
+## GitHub API Integration
+
+### Autenticação
+
+```javascript
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN,
+});
+```
+
+### Tipos de Comentários
+
+#### 1. Review Comment (inline, em linha específica)
+
+```javascript
+await octokit.rest.pulls.createReviewComment({
+  owner: "seu-org",
+  repo: "seu-repo",
+  pull_number: prNumber,
+  body: "⚠️ **Security Issue**: Password being logged...",
+  commit_id: commitSha,
+  path: "src/services/auth.ts",
+  line: 23,
+  side: "RIGHT", // RIGHT = new code, LEFT = old code
+});
+```
+
+#### 2. Review (summary geral)
+
+```javascript
+await octokit.rest.pulls.createReview({
+  owner: "seu-org",
+  repo: "seu-repo",
+  pull_number: prNumber,
+  event: "REQUEST_CHANGES", // ou 'APPROVE' ou 'COMMENT'
+  body: `
+## Code Review Summary
+
+### ✅ Strengths
+- Clean code structure
+- Good error handling
+
+### 🔧 Issues Found (3)
+See inline comments for details.
+
+### 📋 Action Items
+- [ ] Fix security issue (auth.ts:23)
+- [ ] Optimize loop (utils.ts:45)
+
+Overall Score: 72/100
+  `,
+});
+```
+
+#### 3. Issue Comment (comentário geral no PR)
+
+```javascript
+await octokit.rest.issues.createComment({
+  owner: "seu-org",
+  repo: "seu-repo",
+  issue_number: prNumber,
+  body: "🤖 Code Review Agent finished analysis. See review above.",
+});
+```
+
+## Template de Comentários
+
+### Inline Comment Template
+
+````markdown
+{emoji} **{Severity}**: {Title}
+
+{Description}
+
+**Current:**
+
+```{language}
+{current_code}
+```
+
+**Suggested:**
+
+```{language}
+{suggested_code}
+```
+
+**Why:** {explanation}
+
+---
+
+_Category:_ {category} | _Severity:_ {severity}
+````
+
+### Emojis por Categoria
+
+```javascript
+const EMOJI_MAP = {
+  security: "🔒",
+  performance: "⚡",
+  bug: "🐛",
+  style: "🎨",
+  refactor: "♻️",
+  documentation: "📝",
+  test: "✅",
+  warning: "⚠️",
+  info: "ℹ️",
+  question: "❓",
+};
+```
+
+### Severity Tags
+
+```javascript
+const SEVERITY_TAGS = {
+  critical: "🔴 CRITICAL",
+  high: "🟠 HIGH",
+  medium: "🟡 MEDIUM",
+  low: "🔵 LOW",
+  info: "⚪ INFO",
+};
+```
+
+## Comment Grouping
+
+Agrupar comentários relacionados:
+
+```markdown
+### 🔒 Security Issues (2)
+
+1. **Password Exposure** (auth.ts:23) - CRITICAL
+   See inline comment
+
+2. **SQL Injection** (db.ts:45) - HIGH
+   See inline comment
+
+---
+
+### ⚡ Performance Issues (3)
+
+...
+```
+
+## Smart Commenting
+
+### Evitar spam
+
+- Máximo 20 inline comments por review
+- Se > 20 issues, agrupar similares
+- Priorizar por severity
+
+### Tom construtivo
+
+```markdown
+// ❌ Ruim
+"This code is terrible"
+
+// ✅ Bom
+"Consider refactoring this function for better readability.
+Breaking it into smaller functions would make it easier to test and maintain."
+```
+
+### Sugestões aplicáveis
+
+Use GitHub's suggestion feature:
+
+````markdown
+```suggestion
+const sanitized = DOMPurify.sanitize(userInput);
+element.innerHTML = sanitized;
+```
+````
+
+## Output
+
+```json
+{
+  "prNumber": 123,
+  "commentsCreated": {
+    "inline": 8,
+    "review": 1,
+    "summary": 1
+  },
+  "reviewStatus": "changes_requested",
+  "githubUrls": {
+    "review": "https://github.com/org/repo/pull/123#pullrequestreview-123456",
+    "comments": ["https://github.com/org/repo/pull/123#discussion_r123456"]
+  }
+}
+```

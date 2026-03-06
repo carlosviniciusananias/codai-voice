@@ -1,0 +1,262 @@
+{
+  "config": {
+    "configFile": "/Users/carlosviniciusananias/Documents/ananias/codai-voice/playwright.config.ts",
+    "rootDir": "/Users/carlosviniciusananias/Documents/ananias/codai-voice/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/carlosviniciusananias/Documents/ananias/codai-voice/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/carlosviniciusananias/Documents/ananias/codai-voice/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 4,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "CB-3.spec.ts",
+      "file": "CB-3.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "CB-3: Implementar Campo Manual de Prompt",
+          "file": "CB-3.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "deve alternar entre modo voz e modo manual",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 628,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "steps": [
+                        {
+                          "title": "Verificar modo voz inicial",
+                          "duration": 48
+                        },
+                        {
+                          "title": "Alternar para modo manual",
+                          "duration": 100
+                        },
+                        {
+                          "title": "Alternar de volta para modo voz",
+                          "duration": 36
+                        }
+                      ],
+                      "startTime": "2026-03-05T22:18:25.561Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a46828d6527994f278ea-403c7db7236d349df2aa",
+              "file": "CB-3.spec.ts",
+              "line": 8,
+              "column": 7
+            },
+            {
+              "title": "deve validar o limite de caracteres e prompt vazio",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 947,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "steps": [
+                        {
+                          "title": "Verificar botão desabilitado para prompt vazio",
+                          "duration": 4
+                        },
+                        {
+                          "title": "Verificar contador de caracteres",
+                          "duration": 49
+                        },
+                        {
+                          "title": "Verificar limite de 500 caracteres",
+                          "duration": 610
+                        }
+                      ],
+                      "startTime": "2026-03-05T22:18:26.727Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a46828d6527994f278ea-124227f8f1d2d0372fc4",
+              "file": "CB-3.spec.ts",
+              "line": 29,
+              "column": 7
+            },
+            {
+              "title": "deve disparar a geração ao clicar no botão",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 345,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "steps": [
+                        {
+                          "title": "Verificar se o código foi gerado e exibido",
+                          "duration": 9
+                        },
+                        {
+                          "title": "Verificar se the preview foi atualizado",
+                          "duration": 4
+                        }
+                      ],
+                      "startTime": "2026-03-05T22:18:27.681Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a46828d6527994f278ea-32b168edeee63c97ad14",
+              "file": "CB-3.spec.ts",
+              "line": 55,
+              "column": 7
+            },
+            {
+              "title": "deve exibir erro quando a API falha",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 390,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "steps": [
+                        {
+                          "title": "Verificar se a mensagem de erro é exibida",
+                          "duration": 15
+                        }
+                      ],
+                      "startTime": "2026-03-05T22:18:28.033Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a46828d6527994f278ea-adddcd2e44c05037d45e",
+              "file": "CB-3.spec.ts",
+              "line": 79,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-05T22:18:24.820Z",
+    "duration": 3642.299,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
