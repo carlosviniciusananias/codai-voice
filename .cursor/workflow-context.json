@@ -1,13 +1,13 @@
 {
-  "jiraId": "CB-7",
-  "branch": "feature/CB-7",
+  "jiraId": "SIM-001",
+  "branch": "feature/sim-voice-logs",
   "phase": "complete",
   "jiraStatus": "Itens concluídos",
   "agents": {
     "mike": "approved",
-    "buttowski": { "status": "approved", "score": 90 },
+    "buttowski": { "status": "approved", "score": 95 },
     "isa": "done",
-    "hermione": { "status": "passed", "coverage": 85 },
+    "hermione": { "status": "passed", "coverage": 92 },
     "harry": "done"
   }
 }
