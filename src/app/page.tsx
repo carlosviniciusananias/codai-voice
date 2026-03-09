@@ -25,9 +25,18 @@ export default function Home() {
   const [isExplaining, setIsExplaining] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
 
+  const [activeVersion, setActiveVersion] = useState<number | null>(null);
+
   useEffect(() => {
     fetchVersions();
   }, []);
+
+  const handleRestoreVersion = (code: string, index: number) => {
+    setGeneratedCode(code);
+    setActiveVersion(index);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 2000);
+  };
 
   // Resetar explicação quando o código gerado mudar
   useEffect(() => {
@@ -264,14 +273,23 @@ export default function Home() {
                       {versions.map((v, i) => (
                         <button
                           key={i}
-                          onClick={() => setGeneratedCode(v)}
-                          className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-100 dark:bg-zinc-900/50 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900 transition-all group"
+                          onClick={() => handleRestoreVersion(v, i)}
+                          className={`flex items-center justify-between p-3 rounded-xl border transition-all group ${
+                            activeVersion === i 
+                              ? "bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-900" 
+                              : "bg-zinc-50 border-zinc-100 dark:bg-zinc-900/50 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900"
+                          }`}
                         >
-                          <span className="text-xs text-zinc-600 dark:text-zinc-400 truncate max-w-[200px]">
-                            Versão {versions.length - i}
-                          </span>
-                          <span className="text-[10px] text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                            Restaurar
+                          <div className="flex flex-col items-start gap-1">
+                            <span className={`text-xs font-medium ${activeVersion === i ? "text-blue-700 dark:text-blue-400" : "text-zinc-600 dark:text-zinc-400"}`}>
+                              Versão {versions.length - i}
+                            </span>
+                            <span className="text-[10px] text-zinc-400 dark:text-zinc-500">
+                              {i === 0 ? "Mais recente" : `Anterior ${i}`}
+                            </span>
+                          </div>
+                          <span className={`text-[10px] font-medium transition-opacity ${activeVersion === i ? "text-blue-500 opacity-100" : "text-blue-500 opacity-0 group-hover:opacity-100"}`}>
+                            {activeVersion === i ? "Ativa" : "Restaurar"}
                           </span>
                         </button>
                       ))}

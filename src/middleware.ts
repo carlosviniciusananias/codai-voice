@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
     response.cookies.set("codai_session_id", newSessionId, {
       maxAge: 60 * 60 * 24, // 24 horas
       path: "/",
-      httpOnly: true,
+      httpOnly: false, // Permitir acesso via JS para facilitar a UI
       sameSite: "lax",
     });
   }
