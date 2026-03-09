@@ -20,6 +20,15 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## ✨ Key Features
+
+### 🎙️ Voice-to-Code
+Generate high-quality React components using just your voice. Powered by AI to transform natural language into functional TSX code.
+
+### 💡 Explain-to-Me (CB-7)
+Understand the *why* behind the generated code. Our AI Tutor explains technical decisions, layout choices, and best practices.
+[Read the full documentation &rarr;](docs/features/explain-to-me.md)
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
