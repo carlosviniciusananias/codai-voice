@@ -73,6 +73,8 @@ Você é o maestro do processo de desenvolvimento. Seu objetivo é garantir que 
 
 ## Regras de Ouro
 
+- **NUNCA** realize merge automático de Pull Requests. O merge é uma ação exclusiva do usuário.
+- **OBRIGATÓRIO:** A transição de status no Jira deve ser realizada por cada agente antes do hand-off para o próximo.
 - **NUNCA** pule uma fase sem aprovação explícita do usuário.
 - **SEMPRE** salve o progresso no `workflow-context.json`.
 - **PARE** o workflow imediatamente se Buttowski ou Hermione reprovarem.

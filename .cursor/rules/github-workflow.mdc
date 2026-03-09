@@ -160,6 +160,7 @@ Próximos passos:
 2. **Comentários:** Adicionar comentários técnicos em linhas específicas via MCP GitHub ou `gh` CLI.
 3. **Decisão:** Aprovar ou solicitar mudanças diretamente no GitHub.
 4. **Escalação:** Em caso de dúvidas arquiteturais, Buttowski deve marcar **Mike** no PR para consulta.
+5. **IMPORTANTE:** Mesmo após aprovação, o agente **NUNCA** deve realizar o merge. O merge deve permanecer pendente para ação manual do usuário.
 
 ---
 
