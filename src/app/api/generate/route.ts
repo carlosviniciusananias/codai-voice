@@ -17,6 +17,13 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
+async function saveVersion(sessionId: string, component: string) {
+  const key = `session:${sessionId}:versions`;
+  await redis.lpush(key, component);
+  await redis.ltrim(key, 0, 4); // Mantém apenas as 5 versões mais recentes
+  await redis.expire(key, 60 * 60 * 24); // TTL de 24 horas
+}
+
 const ratelimit = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(5, "60 s"),
@@ -86,6 +93,18 @@ export async function POST(request: NextRequest) {
     }
 
     const component = rawContent.trim();
+
+    // Salvar versão na sessão
+    const sessionId = request.cookies.get("codai_session_id")?.value;
+    if (sessionId) {
+      try {
+        await saveVersion(sessionId, component);
+      } catch (saveErr) {
+        console.error("[api/generate] Error saving version:", saveErr);
+        // Não bloqueia a resposta se falhar ao salvar a versão
+      }
+    }
+
     return NextResponse.json({ component });
   } catch (err) {
     console.error("[api/generate]", err);
