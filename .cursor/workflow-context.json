@@ -1,6 +1,13 @@
 {
-  "jiraId": "CB-4",
-  "branch": "feature/CB-4",
-  "phase": "dev",
-  "jiraStatus": "Em andamento"
+  "jiraId": "CB-7",
+  "branch": "feature/CB-7",
+  "phase": "complete",
+  "jiraStatus": "Itens concluídos",
+  "agents": {
+    "mike": "approved",
+    "buttowski": { "status": "approved", "score": 90 },
+    "isa": "done",
+    "hermione": { "status": "passed", "coverage": 85 },
+    "harry": "done"
+  }
 }

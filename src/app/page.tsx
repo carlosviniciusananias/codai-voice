@@ -170,118 +170,117 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex flex-1 gap-6 overflow-hidden">
         <div className={`grid flex-1 grid-cols-1 gap-6 transition-all duration-300 ${showExplanation ? "lg:grid-cols-[380px_1fr_400px]" : "lg:grid-cols-[380px_1fr]"}`}>
           <div className="flex flex-col gap-6">
             <Card className="flex flex-col shadow-lg border-zinc-200/60 dark:border-zinc-800/60">
-            <CardHeader className="border-b border-zinc-100 dark:border-zinc-800 pb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {inputMode === "voice" ? (
-                    <Mic className="h-4 w-4 text-zinc-500" />
-                  ) : (
-                    <MessageSquare className="h-4 w-4 text-zinc-500" />
-                  )}
-                  <CardTitle>{inputMode === "voice" ? "Comando de Voz" : "Prompt Manual"}</CardTitle>
+              <CardHeader className="border-b border-zinc-100 dark:border-zinc-800 pb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {inputMode === "voice" ? (
+                      <Mic className="h-4 w-4 text-zinc-500" />
+                    ) : (
+                      <MessageSquare className="h-4 w-4 text-zinc-500" />
+                    )}
+                    <CardTitle>{inputMode === "voice" ? "Comando de Voz" : "Prompt Manual"}</CardTitle>
+                  </div>
+                  <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg">
+                    <button
+                      onClick={() => setInputMode("voice")}
+                      className={`p-1.5 rounded-md transition-all ${
+                        inputMode === "voice"
+                          ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
+                          : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                      }`}
+                      title="Voz"
+                    >
+                      <Mic className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setInputMode("manual")}
+                      className={`p-1.5 rounded-md transition-all ${
+                        inputMode === "manual"
+                          ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
+                          : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                      }`}
+                      title="Manual"
+                    >
+                      <MessageSquare className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg">
-                  <button
-                    onClick={() => setInputMode("voice")}
-                    className={`p-1.5 rounded-md transition-all ${
-                      inputMode === "voice"
-                        ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
-                        : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                    }`}
-                    title="Voz"
-                  >
-                    <Mic className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={() => setInputMode("manual")}
-                    className={`p-1.5 rounded-md transition-all ${
-                      inputMode === "manual"
-                        ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
-                        : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                    }`}
-                    title="Manual"
-                  >
-                    <MessageSquare className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-6">
-              {inputMode === "voice" ? (
-                <VoiceInput
-                  onTranscription={handleGenerate}
-                  onError={(msg) => setError(msg)}
-                />
-              ) : (
-                <PromptInput
-                  onGenerate={handleGenerate}
-                  disabled={isLoading}
-                />
-              )}
+              </CardHeader>
+              <CardContent className="pt-6 space-y-6">
+                {inputMode === "voice" ? (
+                  <VoiceInput
+                    onTranscription={handleGenerate}
+                    onError={(msg) => setError(msg)}
+                  />
+                ) : (
+                  <PromptInput
+                    onGenerate={handleGenerate}
+                    disabled={isLoading}
+                  />
+                )}
 
-              {transcription && (
-                <div className="space-y-2">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                    Transcrição
-                  </p>
-                  <div className="rounded-xl bg-zinc-50 p-4 border border-zinc-100 dark:bg-zinc-900/50 dark:border-zinc-800">
-                    <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 italic">
-                      &ldquo;{transcription}&rdquo;
+                {transcription && (
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                      Transcrição
+                    </p>
+                    <div className="rounded-xl bg-zinc-50 p-4 border border-zinc-100 dark:bg-zinc-900/50 dark:border-zinc-800">
+                      <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 italic">
+                        &ldquo;{transcription}&rdquo;
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {error && (
+                  <div
+                    role="alert"
+                    className="rounded-xl border border-red-100 bg-red-50/50 p-4 text-sm text-red-600 dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400"
+                  >
+                    <p className="font-medium">Ops! Algo deu errado</p>
+                    <p className="mt-1 text-xs opacity-90">{error}</p>
+                  </div>
+                )}
+
+                {!transcription && !error && (
+                  <div className="rounded-xl bg-blue-50/50 border border-blue-100/50 p-4 dark:bg-blue-950/10 dark:border-blue-900/20">
+                    <p className="text-xs leading-relaxed text-blue-700/80 dark:text-blue-400/80">
+                      <span className="font-semibold block mb-1 text-blue-800 dark:text-blue-300">Dica:</span>
+                      Experimente dizer: &quot;Crie um card de perfil com foto, nome e um botão de seguir&quot;
                     </p>
                   </div>
-                </div>
-              )}
+                )}
 
-              {error && (
-                <div
-                  role="alert"
-                  className="rounded-xl border border-red-100 bg-red-50/50 p-4 text-sm text-red-600 dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400"
-                >
-                  <p className="font-medium">Ops! Algo deu errado</p>
-                  <p className="mt-1 text-xs opacity-90">{error}</p>
-                </div>
-              )}
-
-              {!transcription && !error && (
-                <div className="rounded-xl bg-blue-50/50 border border-blue-100/50 p-4 dark:bg-blue-950/10 dark:border-blue-900/20">
-                  <p className="text-xs leading-relaxed text-blue-700/80 dark:text-blue-400/80">
-                    <span className="font-semibold block mb-1 text-blue-800 dark:text-blue-300">Dica:</span>
-                    Experimente dizer: &quot;Crie um card de perfil com foto, nome e um botão de seguir&quot;
-                  </p>
-                </div>
-              )}
-
-              {versions.length > 0 && (
-                <div className="space-y-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                  <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                    <History className="h-3 w-3" />
-                    Histórico de Versões
+                {versions.length > 0 && (
+                  <div className="space-y-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                    <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                      <History className="h-3 w-3" />
+                      Histórico de Versões
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      {versions.map((v, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setGeneratedCode(v)}
+                          className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-100 dark:bg-zinc-900/50 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900 transition-all group"
+                        >
+                          <span className="text-xs text-zinc-600 dark:text-zinc-400 truncate max-w-[200px]">
+                            Versão {versions.length - i}
+                          </span>
+                          <span className="text-[10px] text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                            Restaurar
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    {versions.map((v, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setGeneratedCode(v)}
-                        className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-100 dark:bg-zinc-900/50 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900 transition-all group"
-                      >
-                        <span className="text-xs text-zinc-600 dark:text-zinc-400 truncate max-w-[200px]">
-                          Versão {versions.length - i}
-                        </span>
-                        <span className="text-[10px] text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                          Restaurar
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
         <div className="flex flex-col gap-6">
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-2 flex-1">

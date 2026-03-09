@@ -37,7 +37,7 @@ export const ExplanationSidebar = ({
       <CardContent className="flex-1 overflow-y-auto p-6 prose prose-zinc dark:prose-invert prose-sm max-w-none">
         <ReactMarkdown
           components={{
-            code({ node, className, children, ...props }: any) {
+            code({ children, ...props }: { children: React.ReactNode }) {
               return (
                 <code
                   className="bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-xs font-mono text-zinc-900 dark:text-zinc-100"
@@ -47,7 +47,7 @@ export const ExplanationSidebar = ({
                 </code>
               );
             },
-            pre({ node, children, ...props }: any) {
+            pre({ children, ...props }: { children: React.ReactNode }) {
               return (
                 <pre
                   className="bg-zinc-900 dark:bg-black p-4 rounded-xl overflow-x-auto my-4 border border-zinc-800"

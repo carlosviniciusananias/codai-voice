@@ -5,42 +5,79 @@ test.describe('Explain-to-Me Feature E2E Tests (CB-7)', () => {
     await page.goto('/');
   });
 
-  test('should show Explain button after code generation and display explanation', async ({ page }) => {
-    // 1. Switch to manual input mode
-    const manualModeButton = page.locator('button[title="Manual"]');
-    await manualModeButton.click();
+  test('should validate the complete Explain-to-Me flow', async ({ page }) => {
+    await test.step('1. Ensure "Explain-to-Me" button exists in Source Code card header', async () => {
+      // Mocking a generated code state if needed, but here we'll generate one
+      const manualModeButton = page.locator('button[title="Manual"]');
+      await manualModeButton.click();
 
-    // 2. Fill the prompt and generate code
-    const promptInput = page.locator('textarea[placeholder*="Descreva o componente"]');
-    await promptInput.fill('Crie um botão simples azul');
-    
-    const generateButton = page.getByRole('button', { name: /Gerar componente/i });
-    await generateButton.click();
+      const promptInput = page.locator('textarea[placeholder*="Descreva o componente"]');
+      await promptInput.fill('Crie um card de perfil simples');
+      
+      const generateButton = page.getByRole('button', { name: /Gerar componente/i });
+      await generateButton.click();
 
-    // 3. Wait for code to be generated (Code2 icon indicates source code card is ready)
-    const sourceCodeTitle = page.getByText('Código Fonte');
-    await expect(sourceCodeTitle).toBeVisible({ timeout: 30000 });
+      // Wait for code generation
+      await expect(page.locator('pre code')).not.toContainText('// Fale para gerar o código...', { timeout: 30000 });
 
-    // 4. Verify "Me Explique" button is visible
-    const explainButton = page.getByRole('button', { name: /Me Explique/i });
-    await expect(explainButton).toBeVisible();
+      const explainButton = page.getByRole('button', { name: /Explicar Código/i });
+      await expect(explainButton).toBeVisible();
+    });
 
-    // 5. Click "Me Explique" and check for loading state
-    await explainButton.click();
-    const explainingButton = page.getByRole('button', { name: /Explicando/i });
-    await expect(explainingButton).toBeVisible();
+    await test.step('2. Clicking the button triggers a loading state', async () => {
+      const explainButton = page.getByRole('button', { name: /Explicar Código/i });
+      await explainButton.click();
+      
+      const explainingButton = page.getByRole('button', { name: /Explicando.../i });
+      await expect(explainingButton).toBeVisible();
+    });
 
-    // 6. Verify Explanation Sidebar appears
-    const explanationTitle = page.getByText('Explicação do Tutor');
-    await expect(explanationTitle).toBeVisible({ timeout: 30000 });
+    await test.step('3. The ExplanationSidebar opens with AI-generated explanation', async () => {
+      const sidebarTitle = page.getByText('Explicação do Tutor');
+      await expect(sidebarTitle).toBeVisible({ timeout: 30000 });
+      
+      const markdownContent = page.locator('.prose');
+      await expect(markdownContent).toBeVisible();
+      // Check if it contains some typical markdown structure (like a paragraph or list)
+      const paragraph = markdownContent.locator('p');
+      await expect(paragraph.first()).toBeVisible();
+    });
 
-    // 7. Verify some content inside the explanation (Markdown rendering)
-    const explanationContent = page.locator('.prose');
-    await expect(explanationContent).toBeVisible();
+    await test.step('4. Generating new code resets explanation and closes sidebar', async () => {
+      const promptInput = page.locator('textarea[placeholder*="Descreva o componente"]');
+      await promptInput.fill('Agora crie um botão vermelho');
+      
+      const generateButton = page.getByRole('button', { name: /Gerar componente/i });
+      await generateButton.click();
 
-    // 8. Close the sidebar
-    const closeButton = page.locator('button').filter({ has: page.locator('svg.lucide-x') });
-    await closeButton.click();
-    await expect(explanationTitle).not.toBeVisible();
+      const sidebarTitle = page.getByText('Explicação do Tutor');
+      await expect(sidebarTitle).not.toBeVisible();
+    });
+  });
+
+  test('should handle error 429 (Too Many Requests)', async ({ page }) => {
+    await test.step('1. Mock 429 error from /api/explain', async () => {
+      await page.route('**/api/explain', async route => {
+        await route.fulfill({
+          status: 429,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: 'Too many requests' }),
+        });
+      });
+
+      // Generate code first to enable explain button
+      const manualModeButton = page.locator('button[title="Manual"]');
+      await manualModeButton.click();
+      const promptInput = page.locator('textarea[placeholder*="Descreva o componente"]');
+      await promptInput.fill('Teste de erro');
+      await page.getByRole('button', { name: /Gerar componente/i }).click();
+      await expect(page.locator('pre code')).not.toContainText('// Fale para gerar o código...', { timeout: 30000 });
+
+      const explainButton = page.getByRole('button', { name: /Explicar Código/i });
+      await explainButton.click();
+
+      const errorMessage = page.getByText('Muitas solicitações. Por favor, aguarde um momento.');
+      await expect(errorMessage).toBeVisible();
+    });
   });
 });

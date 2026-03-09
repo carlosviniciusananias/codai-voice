@@ -99,8 +99,8 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className 
   }, []);
 
   useEffect(() => {
-    setError(null);
     const timeoutId = setTimeout(() => {
+      setError(null);
       if (iframeRef.current && iframeRef.current.contentWindow) {
         iframeRef.current.contentWindow.postMessage({ type: 'render', code }, '*');
       }
