@@ -1,0 +1,20 @@
+---
+description: Políticas globais do projeto, incluindo versionamento semver e regras de evolução pré-v1.
+alwaysApply: true
+---
+
+# 📜 Project Policies
+
+## Alterações significativas (Pré-v1)
+
+Todos os pacotes anteriores à versão 1 — sem usuários externos
+Mudanças radicais são bem-vindas — adote designs melhores.
+Sem shims de retrocompatibilidade, sem guias de migração, sem aliases obsoletos.
+Consolidar de forma agressiva (mesclar pacotes, mover funções)
+Só pause se isso afetar PRs ativos/trabalhos em andamento.
+
+## Semver
+
+Cada alteração = patch— nunca menor/maior, a menos que o usuário diga explicitamente o contrário.
+Os conjuntos de alterações .changeset/\*.mdsempre usampatch
+Consulte trabalhos futuros como v0.1.x, nuncav0.2

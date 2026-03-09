@@ -5,6 +5,8 @@ globs: src/**/*.{ts,tsx,js,jsx}
 
 # Padrões de Código
 
+**Responsável:** Buttowski
+
 1. **Clean Code:** Nomes semânticos, funções pequenas.
 2. **SOLID:** Responsabilidade única acima de tudo.
 3. **Review Automático:** Se o código novo não tiver testes unitários, avise o usuário.

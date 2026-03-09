@@ -1,251 +1,49 @@
 # AI Development Workflow
 
-Este projeto usa agentes especializados para validação automática.
+Este projeto utiliza uma orquestração de agentes especializados para garantir a qualidade e consistência do código.
 
-## Comandos e Ações
+## Orquestração Principal
 
-### @workflow [URL_JIRA]
+Sempre que o usuário iniciar uma tarefa ou usar o comando `@workflow`, você DEVE:
 
-Quando o usuário digitar `@workflow [URL]`, você DEVE:
+1.  **Carregar Orquestração:** Leia `.cursor/agents/workflow.mdc` como fonte primária de verdade para o fluxo.
+2.  **Seguir as Fases:** Respeite a sequência: Design (Mike) → Implementação (Isa) → Review (Buttowski) → QA (Hermione) → DX (Harry).
+3.  **Manter Estado:** Atualize e consulte sempre o arquivo `.cursor/workflow-context.json` para persistir o progresso entre interações.
 
-1. **Carregar orchestração:**
+## ⌨Comandos e Atalhos
 
-```
-   - Leia `.cursor/agents/workflow.mdc` PRIMEIRO
-   - Siga as instruções de orquestração definidas lá
-```
+Para comandos específicos e invocações manuais de agentes, consulte:
 
-2. **Executar fase DEV:**
+- `.cursor/commands/commands.mdc`
 
-```
-   - Carregue `.cursor/rules/jira/index.mdc`
-   - Carregue `.cursor/rules/github/index.mdc`
-   - Carregue `.cursor/rules/code/index.mdc`
-   - Use MCP do Jira para buscar ticket
-   - Implemente código seguindo os padrões
-   - Use MCP do GitHub para criar PR
-   - Use MCP do Jira para mover card → "Em andamento"
-   - Use MCP do Jira para comentar → "Desenvolvimento iniciado"
-```
+## Integração Jira
 
-3. **Perguntar ao usuário:**
+A movimentação de cards deve seguir rigorosamente os IDs de transição definidos em `.cursor/rules/jira-workflow.mdc`:
 
-```
-   "Fase DEV completa. PR #X criado.
-
-   Deseja executar Code Reviewer Agent?"
-   [Sim] [Não]
-```
-
-4. **Se SIM, executar fase CODE REVIEW:**
-
-```
-   - Carregue `.cursor/agents/code-reviewer-agent/agent.md`
-   - Execute: análise + security scan + comentários GitHub
-   - Use MCP do GitHub para comentar no PR
-   - Salve resultado em `.cursor/workflow-context.json`
-   - Mostre summary para o usuário
-```
-
-5. **Se CODE REVIEW REPROVAR:**
-
-```
-   - Use MCP do Jira para comentar → "Code Review reprovou"
-   - Card PERMANECE em "Em andamento"
-   - Mostre problemas encontrados
-   - PARE o workflow (não avançar para QA)
-```
-
-6. **Se CODE REVIEW APROVAR, executar movimentação Jira:**
-
-```
-   - Use MCP do Jira para mover card → "Em revisão qualidade"
-   - Use MCP do Jira para comentar → "Code Review aprovado"
-   - Perguntar: "Deseja executar QA Agent? [Sim] [Não]"
-```
-
-7. **Se SIM, executar fase QA:**
-
-```
-   - Carregue `.cursor/agents/qa-agent/agent.md`
-   - Execute: gerar testes → executar → medir coverage
-   - Salve resultado em `.cursor/workflow-context.json`
-   - Mostre summary para o usuário
-```
-
-8. **Se QA FALHAR:**
-
-```
-   - Use MCP do Jira para mover card → "Em andamento"
-   - Use MCP do Jira para comentar → "QA falhou"
-   - Mostre problemas encontrados
-   - PARE o workflow
-```
-
-9. **Se QA APROVAR:**
-
-```
-   - Use MCP do Jira para mover card → "Itens concluídos"
-   - Use MCP do Jira para comentar → "Implementação completa"
-   - Use MCP do GitHub para adicionar label "ready-to-merge"
-   - Mostre mensagem final de sucesso
-```
-
-### @qa [JIRA-ID]
-
-Quando o usuário digitar `@qa [ID]`, você DEVE:
-
-1. Carregar `.cursor/agents/qa-agent/agent.md`
-2. Executar processo de QA conforme definido no agent.md
-3. Salvar relatório em `reports/qa-[ID]-[timestamp].json`
-4. Mostrar summary para o usuário
-5. **NÃO mover card no Jira** (comando manual)
-
-### @reviewer [PR-NUMBER]
-
-Quando o usuário digitar `@reviewer [PR]`, você DEVE:
-
-1. Carregar `.cursor/agents/code-reviewer-agent/agent.md`
-2. Buscar diff do PR via MCP do GitHub
-3. Executar análise conforme definido no agent.md
-4. Comentar no GitHub via MCP
-5. Mostrar summary para o usuário
-6. **NÃO mover card no Jira** (comando manual)
-
-### @pr (Legado)
-
-Criar PR manualmente usando `.cursor/rules/github/index.mdc`
-
-### @tests (Legado)
-
-Gerar testes usando `.cursor/rules/playwright/index.mdc`
-
----
-
-## Configuração de MCPs
-
-**IMPORTANTE:** Para integração com Jira e GitHub funcionar, você DEVE usar os MCPs disponíveis:
-
-- **Jira MCP:** Para buscar tickets, atualizar status, comentar, mover cards
-- **GitHub MCP:** Para criar PRs, buscar diffs, comentar, adicionar labels
-
-Sempre verifique se os MCPs estão disponíveis antes de executar ações externas.
-
----
+| Fase          | Card vai para        | Trigger              | ID Transição |
+| :------------ | :------------------- | :------------------- | :----------- |
+| Início        | Em andamento         | `@workflow` iniciado | `21`         |
+| Review Aprova | Em revisão qualidade | Code Review passou   | `2`          |
+| QA Falha      | Em andamento         | Testes falharam      | `21`         |
+| QA Aprova     | Itens concluídos     | Testes passaram      | `31`         |
 
 ## Regras de Execução
 
 ### SEMPRE faça:
 
-- Carregue os arquivos .mdc/.md mencionados ANTES de executar
-- Pergunte ao usuário antes de avançar para próxima fase
-- Use MCPs para integrações externas (Jira/GitHub)
-- Salve contexto em `.cursor/workflow-context.json`
-- Mostre progress e resultados de cada fase
-- Mostre arquivos antes de criar/modificar
-- PARE o workflow se QA ou Review falharem
+- Carregue os arquivos `.mdc` relevantes antes de executar qualquer ação.
+- Use os MCPs de **Jira** e **GitHub** para todas as integrações externas.
+- Peça aprovação do usuário antes de transicionar entre fases do workflow.
+- Valide o código com testes (Hermione) antes de criar qualquer Pull Request.
 
 ### NUNCA faça:
 
-- Pule fases sem aprovação do usuário
-- Assuma que MCPs estão disponíveis sem verificar
-- Delete arquivos sem confirmar
-- Ignore falhas de QA ou Review
-- Continue workflow se alguma validação falhar
-- Mova cards do Jira em comandos manuais (@qa, @reviewer)
-
----
-
-## Fluxo Esperado (Exemplo Completo)
-
-```
-Usuário: @workflow https://jira.com/browse/CB-123
-
-Claude:
-1. [Carrega workflow.mdc]
-2. [Carrega rules de jira/github/code]
-3. [Busca CB-123 via MCP Jira]
-4. [Move card para "Em andamento" via MCP Jira]
-5. [Implementa código]
-6. [Cria PR #456 via MCP GitHub]
-7. "PR #456 criado. Continuar para Code Review? [Sim/Não]"
-
-Usuário: Sim
-
-Claude:
-8. [Carrega code-reviewer-agent/agent.md]
-9. [Analisa código]
-10. [Escaneia segurança]
-11. [Comenta no GitHub via MCP]
-
---- CENÁRIO A: Review APROVA ---
-12. [Move card para "Em revisão qualidade" via MCP Jira]
-13. [Comenta aprovação no Jira via MCP]
-14. "Review aprovado (Score: 82/100). Continuar para QA? [Sim/Não]"
-
-Usuário: Sim
-
-15. [Carrega qa-agent/agent.md]
-16. [Gera testes]
-17. [Executa testes]
-18. [Mede coverage]
-
---- CENÁRIO A1: QA APROVA ---
-19. [Move card para "Itens concluídos" via MCP Jira]
-20. [Comenta conclusão no Jira via MCP]
-21. [Adiciona label "ready-to-merge" no GitHub via MCP]
-22. "Workflow completo! PR #456 pronto para merge."
-
---- CENÁRIO A2: QA FALHA ---
-19. [Move card de volta para "Em andamento" via MCP Jira]
-20. [Comenta falhas no Jira via MCP]
-21. "QA falhou (Coverage: 65%). Veja detalhes no relatório."
-22. [PARA workflow]
-
---- CENÁRIO B: Review REPROVA ---
-12. [Comenta reprovação no Jira via MCP]
-13. [Card permanece em "Em andamento"]
-14. "Review reprovou (Score: 60/100). Veja comentários no GitHub."
-15. [PARA workflow]
-```
-
----
+- Pule fases do workflow sem autorização explícita.
+- Mova cards no Jira em comandos manuais (exceto se especificado no `commands.mdc`).
+- Ignore falhas de linter ou testes durante a fase de QA.
 
 ## Troubleshooting
 
-### Se Jira não funcionar:
-
-- Verifique: MCP do Jira está habilitado?
-- Verifique: Credenciais estão configuradas?
-- Fallback: Mostre instruções manuais ao usuário
-
-### Se GitHub não funcionar:
-
-- Verifique: MCP do GitHub está habilitado?
-- Verifique: Token tem permissões corretas?
-- Fallback: Mostre comandos git para usuário executar
-
-### Se agentes não executarem:
-
-- Confirme que arquivos .md existem nos caminhos corretos
-- Mostre erro claro ao usuário
-- Ofereça executar manualmente
-
-### Se movimentação Jira falhar:
-
-- Verifique se IDs das listas estão corretos em `jira/index.mdc`
-- Execute `get_board_lists` para obter IDs atualizados
-- Tente mover manualmente: `@jira-move CB-123 "Em revisão qualidade"`
-
----
-
-## Movimentação de Cards no Jira
-
-| Fase           | Card vai para         | Quando                   |
-| :------------- | :-------------------- | :----------------------- |
-| Início         | Em andamento          | @workflow iniciado       |
-| Dev completo   | Em andamento (mantém) | Implementação finalizada |
-| Review reprova | Em andamento (mantém) | Code Review falhou       |
-| Review aprova  | Em revisão qualidade  | Code Review passou       |
-| QA falha       | Em andamento          | QA falhou                |
-| QA aprova      | Itens concluídos      | QA passou                |
+- **MCPs:** Verifique se os servidores MCP estão ativos se as chamadas falharem.
+- **Contexto:** Se o workflow parecer "perdido", releia o `.cursor/workflow-context.json`.
+- **Regras:** Em caso de dúvida sobre padrões, consulte `.cursor/rules/code-standards.mdc`.

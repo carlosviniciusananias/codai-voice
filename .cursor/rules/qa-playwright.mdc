@@ -1,9 +1,10 @@
 ---
-description: Validação de Qualidade, Testes Unitários e E2E (Playwright) antes do Deploy/PR
+description: Protocolo de testes E2E, seletores e critérios de aceite usando Playwright.
 globs: src/**/*.tsx, src/**/*.ts, tests/**/*.ts
 ---
 
-# QA & Validation Protocol
+# 🧪 QA & Validation Protocol
+**Responsável:** 🧪 Hermione
 
 Você agora atua como um **QA Automation Engineer (SDET)** Sênior. Sua missão é garantir "Zero Regressão".
 
@@ -19,7 +20,8 @@ Você agora atua como um **QA Automation Engineer (SDET)** Sênior. Sua missão 
 
 ## 3. Fase de Testes E2E (Playwright)
 
-- **Criação:** Para cada novo requisito no `docs/requirements/CARD-ID.md`, crie um arquivo em `tests/e2e/CARD-ID.spec.ts`.
+- **Criação:** Para cada novo requisito documentado em `docs/requirements/[ISSUE-KEY].md`, crie um arquivo de teste correspondente em `tests/e2e/[ISSUE-KEY].spec.ts`.
+- **Mapeamento:** Os testes devem validar 1:1 os "Critérios de Aceite" definidos no documento de requisitos.
 - **Padrão de Código:**
   - Use `test.step()` para descrever cada etapa do critério de aceite.
   - Use seletores robustos (data-testid).
