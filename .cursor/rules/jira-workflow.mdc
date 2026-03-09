@@ -81,60 +81,35 @@ globs: docs/requirements/*.md, docs/planning/*.md
    - text: "🔨 Desenvolvimento iniciado - Análise de requisitos concluída"
 ```
 
-**Pergunte:** "Análise concluída. Requisitos documentados. Posso criar o plano técnico?"
-
 ---
 
-### ETAPA 2: Planejamento Técnico
+### ETAPA 2: Planejamento Técnico (Mike & Buttowski)
 
 **Execute:**
 
-1. **Analisar arquitetura do projeto**
-2. **Criar plano técnico:**
+1. **Analisar arquitetura do projeto** (Mike)
+2. **Criar plano técnico:** (Mike)
    - Arquivo: `docs/planning/[ISSUE-KEY]-plan.md`
-   - Conteúdo:
-
-```markdown
-     # Plano Técnico - [ISSUE-KEY]
-
-     ## Arquitetura da Solução
-     [Descrição da abordagem]
-
-     ## Arquivos a Criar/Modificar
-     - `arquivo1.tsx` - [Propósito]
-     - `arquivo2.ts` - [Propósito]
-
-     ## Dependências
-     - Biblioteca X (versão Y)
-
-     ## Passo a Passo
-     1. Passo 1
-     2. Passo 2
-
-     ## Riscos e Mitigações
-     - Risco 1 → Mitigação
-```
-
-**Pergunte:** "Plano técnico criado. Aprovado para implementação?"
+3. **Peer Review do Plano:** (Buttowski)
+   - Buttowski revisa o plano e aprova a abordagem.
+   - O início da implementação é automático após o consenso dos leads.
 
 ---
 
-### ETAPA 3: Implementação
+### ETAPA 3: Implementação & PR (Isa)
 
 **Execute:**
 
-1. **Implementar código** seguindo o plano
-2. **Criar testes unitários**
-3. **Mostrar cada arquivo antes de criar**
+1. **Implementar código** seguindo o plano.
+2. **Criar testes unitários**.
+3. **Abrir Pull Request:** (Obrigatoriamente automático via `.cursor/rules/github-workflow.mdc`).
 
-**Pergunte após cada arquivo:** "Arquivo criado. Prosseguir?"
-
-**Ao finalizar implementação:**
+**Ao finalizar implementação e abrir PR:**
 
 ```
 Use MCP Jira: add_comment
 - cardId: [ISSUE-KEY]
-- text: " Implementação concluída. Código pronto para revisão."
+- text: "🚀 Implementação concluída. PR #[PR-NUM] aberto para revisão no GitHub."
 ```
 
 ---
