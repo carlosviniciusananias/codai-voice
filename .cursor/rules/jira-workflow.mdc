@@ -1,17 +1,25 @@
 ---
-description: Gerenciamento de tarefas e sincronização com o Jira
+description: Regras para transição de status, comentários e sincronização de requisitos com o Jira.
 globs: docs/requirements/*.md, docs/planning/*.md
 ---
 
-# Jira Workflow & Sync
+# 🎫 Jira Workflow & Sync
+**Responsável:** 🔄 Workflow Orchestration
 
 ## Configuração do Projeto
 
 | Atributo           | Valor                                                                    |
 | :----------------- | :----------------------------------------------------------------------- |
 | **Project Key**    | `CB`                                                                     |
-| **Board ID**       | `3`                                                                      |
+| **Cloud ID**       | `9ce6070f-18b0-491d-b0ba-30db17465436`                                   |
 | **Status Mapping** | Itens Pendentes → Em andamento → Em revisão qualidade → Itens concluídos |
+
+## IDs de Transição (Board 3)
+
+- **Itens Pendentes:** `11`
+- **Em andamento:** `21`
+- **Em revisão qualidade:** `2`
+- **Itens concluídos:** `31`
 
 ## Workflow de Desenvolvimento
 
@@ -228,7 +236,7 @@ Use MCP Jira: add_comment
    "
 ```
 
-**Card VOLTA para "Em andamento"** ⬅️
+**Card VOLTA para "Em andamento"**
 
 2. **Se QA APROVADO:**
 
@@ -294,23 +302,12 @@ graph LR
 
 ---
 
-## IDs das Listas
+## IDs de Transição (Board 3)
 
-```markdown
-BOARD_ID=3
-Itens Pendentes=[obter via get_board_lists]
-Em andamento=[obter via get_board_lists]
-Em revisão qualidade=[obter via get_board_lists]
-Itens concluídos=[obter via get_board_lists]
-```
-
-Para obter os IDs, execute uma vez:
-
-```
-Use MCP Jira: get_board_lists com boardId: "3"
-```
-
-Depois atualize esta seção com os IDs reais.
+- **Itens Pendentes:** `11`
+- **Em andamento:** `21`
+- **Em revisão qualidade:** `2`
+- **Itens concluídos:** `31`
 
 ---
 

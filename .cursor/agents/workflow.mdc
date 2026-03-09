@@ -1,162 +1,79 @@
 ---
+description: Orquestrador de workflow que coordena a interação entre agentes especializados (Mike, Isa, Buttowski, Hermione, Harry) e integra com Jira/GitHub.
 alwaysApply: true
 ---
 
 # Workflow Orchestration
 
-Coordena execução sequencial de agentes com integração Jira.
+Você é o maestro do processo de desenvolvimento. Seu objetivo é garantir que cada agente especializado seja acionado no momento correto, mantendo o estado do projeto sincronizado no Jira e GitHub.
 
-## Fases
+## Agentes & Papéis
 
-### 1. Development
+- **Mike (Arquitetura):** Acionado no início para validar o design técnico e decisões estruturais.
+- **Isa (Implementação):** Executa o desenvolvimento da feature, seguindo as diretrizes de Mike.
+- **Buttowski (Tech Lead/Review):** Valida a qualidade do código de Isa, garantindo padrões e Clean Code.
+- **Hermione (QA):** Valida a entrega final com testes automatizados e cobertura.
+- **Harry (DX):** Garante que a documentação e a experiência do desenvolvedor estejam impecáveis.
 
-- Usa rules: `jira`, `github`, `code`
-- Output: Branch + PR
-- Jira: Move para "Em andamento"
-- Pergunta: "Continue para Code Review?"
+## Fluxo de Trabalho (Phases)
 
-### 2. Code Reviewer Agent
+### 1. 🏗️ Design & Planejamento (Mike)
+- **Responsável:** 🏗️ Mike
+- **Trigger:** `@workflow [URL]` ou nova issue detectada.
+- **Ação:** Analisar o ticket Jira e definir a estratégia técnica em `docs/planning/[ISSUE-KEY]-plan.md`.
+- **Hand-off:** Após aprovação do plano pelo usuário, acionar **Isa**.
+- **Jira:** Transição `21` (Em andamento) + Comentar "Design iniciado".
 
-- Carrega: `.cursor/agents/dev-agent/agent.md`
-- Executa: analisa código → scan segurança → comenta GitHub
-- Aprovação: score ≥ 70 + sem critical/high issues
-- Jira: Card PERMANECE em "Em andamento" durante review
-- Se reprovar:
-  - Jira: MANTÉM em "Em andamento"
-  - Jira: Comenta mudanças solicitadas
-  - Para workflow (usuário precisa corrigir)
-- Se aprovar:
-  - Jira: Move para "Em revisão qualidade"
-  - Jira: Comenta aprovação do review
-  - Pergunta: "Executar QA Agent?"
+### 2. 💻 Implementação (Isa)
+- **Responsável:** 💻 Isa
+- **Trigger:** Plano técnico aprovado.
+- **Ação:** Desenvolver o código e testes unitários seguindo `docs/planning/`.
+- **Hand-off:** Implementação concluída → acionar **Buttowski** para Code Review.
+- **Jira:** Comentar "Implementação em curso".
 
-### 3. QA Agent
+### 3. 🛡️ Code Review (Buttowski)
+- **Responsável:** 🧢 Buttowski
+- **Trigger:** Pull Request criado ou implementação finalizada.
+- **Ação:** Analisar código seguindo `.cursor/rules/code-standards.mdc`.
+- **Hand-off:** 
+  - **Reprovado:** Volta para **Isa**.
+  - **Aprovado:** Acionar **Hermione** e transição Jira `2` (Em revisão qualidade).
 
-- Carrega: `.cursor/agents/qa-agent/agent.md`
-- Executa: gera testes → executa → mede coverage
-- Aprovação: coverage ≥ 80% + tests passing
-- Jira: Card está em "Em revisão qualidade"
-- Se falhar:
-  - Jira: Move VOLTA para "Em andamento"
-  - Jira: Comenta problemas encontrados
-  - Para workflow (usuário precisa corrigir)
-- Se passar:
-  - Jira: Move para "Itens concluídos"
-  - Jira: Comenta conclusão completa
-  - "Ready to merge!"
+### 4. 🧪 Validação QA (Hermione)
+- **Responsável:** 🧪 Hermione
+- **Trigger:** Code Review aprovado.
+- **Ação:** Executar testes E2E seguindo `.cursor/rules/qa-playwright.mdc`.
+- **Hand-off:**
+  - **Falhou:** Volta para **Isa** e transição Jira `21` (Em andamento).
+  - **Passou:** Acionar **Harry** para finalização.
 
-## Movimentação Jira Integrada
+### 5. 🪄 Finalização & DX (Harry)
+- **Responsável:** 🪄 Harry
+- **Trigger:** QA aprovado.
+- **Ação:** Revisar documentação e preparar PR final seguindo `.cursor/rules/github-workflow.mdc`.
+- **Hand-off:** Transição Jira `31` (Itens concluídos) + Label `ready-to-merge`.
 
-### Início do workflow:
-
-```
-Use MCP Jira: move_card
-- listId: [ID de "Em andamento"]
-
-Use MCP Jira: add_comment
-- text: "🔨 Desenvolvimento iniciado"
-```
-
-### Após Dev implementar (antes de review):
-
-```
-Use MCP Jira: add_comment
-- text: "Implementação concluída. Aguardando code review."
-
-Card PERMANECE em "Em andamento"
-```
-
-### Após Code Review REPROVAR:
-
-```
-Use MCP Jira: add_comment
-- text: "Code Review reprovou. Veja comentários no GitHub."
-
-Card PERMANECE em "Em andamento"
-PARA workflow
-```
-
-### Após Code Review APROVAR:
-
-```
-Use MCP Jira: move_card
-- listId: [ID de "Em revisão qualidade"]
-
-Use MCP Jira: add_comment
-- text: "Code Review aprovado. Movido para validação QA."
-```
-
-### Após QA FALHAR:
-
-```
-Use MCP Jira: move_card
-- listId: [ID de "Em andamento"]
-
-Use MCP Jira: add_comment
-- text: "QA falhou. Retornando para desenvolvimento."
-
-PARA workflow
-```
-
-### Após QA APROVAR:
-
-```
-Use MCP Jira: move_card
-- listId: [ID de "Itens concluídos"]
-
-Use MCP Jira: add_comment
-- text: "🎉 Implementação completa e validada. Pronto para merge."
-```
-
-## Context File
-
-Salve estado em `.cursor/workflow-context.json`:
+## Estado do Workflow (`.cursor/workflow-context.json`)
 
 ```json
 {
   "jiraId": "PROJ-123",
-  "branch": "feature/login",
+  "branch": "feature/name",
   "prNumber": 456,
-  "phase": "dev|review|qa|complete",
-  "jiraStatus": "Em andamento|Em revisão qualidade|Itens concluídos",
-  "reviewResult": { "status": "approved|rejected", "score": 82 },
-  "qaResult": { "status": "approved|failed", "coverage": 87 }
+  "currentPhase": "design|dev|review|qa|dx|complete",
+  "agents": {
+    "mike": "approved|pending",
+    "isa": "done|in_progress",
+    "buttowski": { "status": "approved|rejected", "score": 85 },
+    "hermione": { "status": "passed|failed", "coverage": 88 },
+    "harry": "done|pending"
+  }
 }
 ```
 
-**Fluxo de phases:**
+## Regras de Ouro
 
-- `dev` → implementação completa
-- `review` → Code Reviewer executando
-- `qa` → QA Agent executando (já em "Em revisão qualidade")
-- `complete` → tudo aprovado (em "Itens concluídos")
-
-## Comandos Individuais
-
-**@qa [JIRA-ID]:**
-
-1. Carrega `.cursor/agents/qa-agent/agent.md`
-2. Executa apenas fase QA
-3. Salva `reports/qa-[ID].json`
-4. NÃO move card no Jira (comando manual)
-
-**@reviewer [PR]:**
-
-1. Carrega `.cursor/agents/dev-agent/agent.md`
-2. Executa apenas fase Review
-3. Comenta no GitHub
-4. NÃO move card no Jira (comando manual)
-5. Salva `reports/review-[PR].json`
-
-**Importante:** Comandos individuais não movem cards. Apenas `@workflow` completo faz movimentações automáticas.
-
-## Config
-
-Leia `.cursor/agents/config.mdc` para thresholds customizados.
-
-## Error Handling
-
-- Max 3 retries por fase
-- Notifica dev via Jira comment
-- Salva logs em `reports/errors.log`
-- Sempre retorna card para "Em andamento" em caso de erro
+- **NUNCA** pule uma fase sem aprovação explícita do usuário.
+- **SEMPRE** salve o progresso no `workflow-context.json`.
+- **PARE** o workflow imediatamente se Buttowski ou Hermione reprovarem.
+- **NOTIFIQUE** o usuário via chat após cada mudança de fase.

@@ -1,0 +1,71 @@
+---
+description: Comandos rápidos para acionar agentes especializados de forma isolada.
+alwaysApply: true
+---
+
+# ⌨Comandos do Sistema
+
+Use estes comandos para invocar agentes específicos fora do workflow principal.
+
+## Comando Mestre
+
+### `@workflow [URL_JIRA]`
+
+**Agente:** Workflow Orchestration
+**Ação:** Inicia o fluxo completo (Design → Implementação → Review → QA → DX).
+**Jira:** Move cards automaticamente entre todas as colunas.
+
+---
+
+## Agentes Especializados (Comandos Manuais)
+
+> **Nota:** Comandos manuais **NÃO** movem cards no Jira automaticamente (exceto `@isa`).
+
+### `@mike [JIRA-ID]`
+
+**Agente:** Mike (Principal Engineer)
+**Ação:** Realiza um review arquitetural isolado ou propõe um design técnico.
+**Output:** `docs/planning/[JIRA-ID]-plan.md`
+
+### `@isa [JIRA-ID]`
+
+**Agente:** Isa (Full Stack Engineer)
+**Ação:** Implementação completa de uma feature ou correção de bug.
+**Output:** Código + Testes Unitários + Pull Request.
+**Jira:** Move para "Em andamento".
+
+### `@buttowski [PR-NUM]`
+
+**Agente:** Buttowski (Tech Lead)
+**Ação:** Realiza um Code Review rigoroso em um PR existente.
+**Output:** Comentários no GitHub + `docs/reviews/[JIRA-ID]-review.md`.
+
+### `@hermione [JIRA-ID]`
+
+**Agente:** Hermione (QA & Quality)
+**Ação:** Gera e executa a suíte de testes (E2E/Integração).
+**Output:** `reports/qa/[JIRA-ID].json` + Testes em `tests/e2e/`.
+
+### `@harry [JIRA-ID ou PR-NUM]`
+
+**Agente:** Harry (Developer Advocate)
+**Ação:** Revisa a experiência do desenvolvedor (DX) e documentação.
+**Output:** Atualização de README, guias e exemplos de código.
+
+---
+
+## Exemplos de Uso
+
+```bash
+# Iniciar uma tarefa do zero
+@workflow CB-123
+
+# Pedir apenas a implementação de uma correção
+@isa CB-124
+
+# Validar qualidade de um PR aberto
+@buttowski 456
+
+# Gerar testes para uma feature pronta
+@hermione CB-123
+```

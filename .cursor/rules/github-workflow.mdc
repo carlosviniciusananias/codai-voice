@@ -1,9 +1,10 @@
 ---
-description: Automação de Commits e Pull Requests no GitHub
+description: Padrões para criação de branches, mensagens de commit e abertura de Pull Requests.
 globs: docs/**/*.md
 ---
 
-# GitHub Workflow Standard
+# 🐙 GitHub Workflow Standard
+**Responsáveis:** 🔄 Workflow Orchestration & 🪄 Harry
 
 ## Configuração do Repositório
 
@@ -121,7 +122,7 @@ Use MCP Git: git_push
 - [x] Code Review IA concluído
 - [x] Documentação atualizada
 
-## 📊 Métricas
+## Métricas
 
 - Arquivos modificados: [X]
 - Linhas adicionadas: [Y]
