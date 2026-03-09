@@ -1,22 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import VoiceInput from "./components/VoiceInput";
 import PromptInput from "./components/PromptInput";
 import { PreviewSandbox } from "../components/PreviewSandbox";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
-import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare } from "lucide-react";
+import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare, History } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { downloadAsTsx, sanitizeFileName } from "./utils/export-utils";
 
 export default function Home() {
   const [transcription, setTranscription] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
+  const [versions, setVersions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<"voice" | "manual">("voice");
+
+  useEffect(() => {
+    fetchVersions();
+  }, []);
+
+  const fetchVersions = async () => {
+    try {
+      const response = await fetch("/api/versions");
+      if (response.ok) {
+        const data = await response.json();
+        setVersions(data.versions || []);
+      }
+    } catch (err) {
+      console.error("Erro ao buscar versões:", err);
+    }
+  };
 
   const handleExport = () => {
     if (!generatedCode) return;
@@ -65,6 +82,7 @@ export default function Home() {
       }
 
       setGeneratedCode(data.component ?? "");
+      fetchVersions(); // Atualiza o histórico após gerar
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Erro desconhecido ao gerar código.";
@@ -183,6 +201,31 @@ export default function Home() {
                     <span className="font-semibold block mb-1 text-blue-800 dark:text-blue-300">Dica:</span>
                     Experimente dizer: &quot;Crie um card de perfil com foto, nome e um botão de seguir&quot;
                   </p>
+                </div>
+              )}
+
+              {versions.length > 0 && (
+                <div className="space-y-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                  <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                    <History className="h-3 w-3" />
+                    Histórico de Versões
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {versions.map((v, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setGeneratedCode(v)}
+                        className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-100 dark:bg-zinc-900/50 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900 transition-all group"
+                      >
+                        <span className="text-xs text-zinc-600 dark:text-zinc-400 truncate max-w-[200px]">
+                          Versão {versions.length - i}
+                        </span>
+                        <span className="text-[10px] text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                          Restaurar
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </CardContent>
