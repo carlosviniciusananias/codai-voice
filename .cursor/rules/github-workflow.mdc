@@ -46,55 +46,35 @@ globs: docs/**/*.md
 
 ---
 
-### ETAPA 2: Commits (Simulado)
+### ETAPA 2: Commits & Push (Automático)
 
-**Importante:** Como o MCP GitHub oficial não faz commits diretos de arquivos locais, você deve:
+**Ação:** O modelo deve realizar o commit e push das alterações automaticamente.
 
-1. **Listar arquivos modificados** que serão commitados
-2. **Gerar mensagem de commit:**
+1. **Listar arquivos modificados**
+2. **Realizar commit e push:**
 
-```
-   feat: [Summary do Jira] ([ISSUE-KEY])
-```
-
-3. **Instruir o usuário:**
-
-```
-   Para fazer o commit, execute localmente:
-
-   git checkout feature/[ISSUE-KEY]
-   git add .
-   git commit -m "feat: [Summary] ([ISSUE-KEY])"
-   git push origin feature/[ISSUE-KEY]
-```
-
-**Alternativa (se MCP Git local estiver disponível):**
-
-```
-Use MCP Git: git_create_branch com nome feature/[ISSUE-KEY]
-Use MCP Git: git_commit com mensagem "feat: [Summary] ([ISSUE-KEY])"
-Use MCP Git: git_push
+```bash
+git add .
+git commit -m "feat: [Summary do Jira] ([ISSUE-KEY])"
+git push origin feature/[ISSUE-KEY]
 ```
 
 ---
 
-### ETAPA 3: Criar Pull Request
+### ETAPA 3: Criar Pull Request (Automático)
 
-1. **Buscar informações do Jira:**
-   - Summary
-   - Description
-   - URL do card
+**Ação:** Criar o PR no GitHub imediatamente após o push.
 
-2. **Criar PR:**
+1. **Buscar informações do Jira:** Summary, Description, URL.
+2. **Criar PR via Shell (gh CLI) ou MCP GitHub:**
 
-```
-   Use MCP GitHub: create_pull_request
-   - owner: [OWNER]
-   - repo: [REPO]
-   - title: "feat: [Summary do Jira]"
-   - head: feature/[ISSUE-KEY]
-   - base: main
-   - body: [Template abaixo]
+```bash
+# OBRIGATÓRIO: Criar o PR automaticamente
+git push origin feature/[ISSUE-KEY]
+gh pr create --title "feat: [Summary do Jira] ([ISSUE-KEY])" --body "$(cat <<'EOF'
+[Template abaixo preenchido]
+EOF
+)"
 ```
 
 **Template do corpo do PR:**
@@ -167,6 +147,19 @@ Próximos passos:
 - Testes de CI/CD
 - Merge após aprovação
 ```
+
+---
+
+## 🛡️ Code Review (GitHub-First)
+
+**Responsável:** 🧢 Buttowski
+
+**Ação:** O review deve ser realizado diretamente no GitHub PR.
+
+1. **Analisar o Diff:** Usar MCP GitHub para ler o diff do PR.
+2. **Comentários:** Adicionar comentários técnicos em linhas específicas via MCP GitHub ou `gh` CLI.
+3. **Decisão:** Aprovar ou solicitar mudanças diretamente no GitHub.
+4. **Escalação:** Em caso de dúvidas arquiteturais, Buttowski deve marcar **Mike** no PR para consulta.
 
 ---
 
