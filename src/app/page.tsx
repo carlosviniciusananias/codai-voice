@@ -5,9 +5,10 @@ import VoiceInput from "./components/VoiceInput";
 import PromptInput from "./components/PromptInput";
 import { PreviewSandbox } from "../components/PreviewSandbox";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
-import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare, History } from "lucide-react";
+import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare, History, Lightbulb } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { downloadAsTsx, sanitizeFileName } from "./utils/export-utils";
+import { ExplanationSidebar } from "./components/ExplanationSidebar";
 
 export default function Home() {
   const [transcription, setTranscription] = useState("");
@@ -19,9 +20,22 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<"voice" | "manual">("voice");
 
+  // Estados para a funcionalidade Explain-to-Me
+  const [explanation, setExplanation] = useState("");
+  const [isExplaining, setIsExplaining] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
+
   useEffect(() => {
     fetchVersions();
   }, []);
+
+  // Resetar explicação quando o código gerado mudar
+  useEffect(() => {
+    if (generatedCode) {
+      setExplanation("");
+      setShowExplanation(false);
+    }
+  }, [generatedCode]);
 
   const fetchVersions = async () => {
     try {
@@ -49,6 +63,42 @@ export default function Home() {
       setError("Erro ao exportar o arquivo.");
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handleExplain = async () => {
+    if (!generatedCode) return;
+
+    setIsExplaining(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/explain", {
+        method: "POST",
+        body: JSON.stringify({
+          code: generatedCode,
+          prompt: transcription || "Componente gerado",
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.status === 429) {
+        throw new Error("Muitas solicitações. Por favor, aguarde um momento.");
+      }
+
+      if (!response.ok) {
+        throw new Error("Erro ao gerar explicação.");
+      }
+
+      const data = await response.json();
+      setExplanation(data.explanation);
+      setShowExplanation(true);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Erro desconhecido ao explicar código.";
+      setError(message);
+    } finally {
+      setIsExplaining(false);
     }
   };
 
@@ -120,9 +170,10 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[380px_1fr]">
-        <div className="flex flex-col gap-6">
-          <Card className="flex flex-col shadow-lg border-zinc-200/60 dark:border-zinc-800/60">
+      <div className="flex flex-1 gap-6 overflow-hidden">
+        <div className={`grid flex-1 grid-cols-1 gap-6 transition-all duration-300 ${showExplanation ? "lg:grid-cols-[380px_1fr_400px]" : "lg:grid-cols-[380px_1fr]"}`}>
+          <div className="flex flex-col gap-6">
+            <Card className="flex flex-col shadow-lg border-zinc-200/60 dark:border-zinc-800/60">
             <CardHeader className="border-b border-zinc-100 dark:border-zinc-800 pb-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -251,6 +302,20 @@ export default function Home() {
                     <Button
                       variant="outline"
                       size="sm"
+                      className="h-7 px-2 text-[10px] gap-1.5 border-zinc-200 dark:border-zinc-700 hover:bg-amber-50 dark:hover:bg-amber-950/30 hover:text-amber-600"
+                      onClick={handleExplain}
+                      disabled={!generatedCode || isExplaining}
+                    >
+                      {isExplaining ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Lightbulb className="h-3 w-3" />
+                      )}
+                      {isExplaining ? "Explicando..." : "Explicar Código"}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="h-7 px-2 text-[10px] gap-1.5 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                       onClick={handleExport}
                       disabled={!generatedCode || isExporting}
@@ -313,6 +378,16 @@ export default function Home() {
             </Card>
           </div>
         </div>
+
+        {showExplanation && (
+          <div className="hidden lg:block w-[400px] animate-in slide-in-from-right duration-300">
+            <ExplanationSidebar
+              explanation={explanation}
+              onClose={() => setShowExplanation(false)}
+              isVisible={showExplanation}
+            />
+          </div>
+        )}
       </div>
     </section>
   );
