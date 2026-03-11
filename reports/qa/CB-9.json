@@ -1,0 +1,38 @@
+{
+  "issue": "CB-9",
+  "title": "Composição de Componentes (Multi-step Assembly)",
+  "status": "PASSED",
+  "timestamp": "2026-03-11T14:30:00Z",
+  "summary": "A funcionalidade de composição incremental foi validada com sucesso através de análise estática de código e verificação de fluxo. O sistema agora suporta a criação de componentes em múltiplos passos, mantendo o contexto e permitindo a restauração de estados anteriores.",
+  "validations": [
+    {
+      "feature": "Backend - Persistência Redis",
+      "status": "OK",
+      "details": "O arquivo `src/app/api/generate/route.ts` implementa corretamente o salvamento do layout consolidado (`layoutKey`) e do histórico de passos (`historyKey`) no Redis."
+    },
+    {
+      "feature": "Backend - Prompt Dinâmico",
+      "status": "OK",
+      "details": "O `systemPrompt` em `api/generate` agora aceita um parâmetro de contexto e gera instruções específicas para alterações incrementais quando o flag `isIncremental` é enviado."
+    },
+    {
+      "feature": "Frontend - Toggle Novo/Adicionar",
+      "status": "OK",
+      "details": "O componente `Home.tsx` inclui o toggle para alternar entre os modos 'Novo' e 'Adicionar', enviando o estado correto para a API."
+    },
+    {
+      "feature": "Frontend - Histórico e Restauração",
+      "status": "OK",
+      "details": "A lista de 'Passos da Composição' é exibida corretamente e a função `handleRestoreVersion` permite carregar snapshots anteriores no editor e preview."
+    },
+    {
+      "feature": "Integridade e Regressão",
+      "status": "OK",
+      "details": "As funcionalidades existentes (geração simples, exportação, preview) foram preservadas e integradas ao novo fluxo de histórico."
+    }
+  ],
+  "observations": [
+    "O ambiente de execução de testes E2E (Playwright) não possui navegadores instalados no sandbox, impossibilitando a execução automatizada completa. A validação foi feita via análise de código e lógica de implementação.",
+    "Nenhum erro de linter foi encontrado nos arquivos modificados."
+  ]
+}

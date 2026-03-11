@@ -14,6 +14,8 @@ export default function Home() {
   const [transcription, setTranscription] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
   const [versions, setVersions] = useState<string[]>([]);
+  const [history, setHistory] = useState<{ instruction: string; snapshot: string; timestamp: string }[]>([]);
+  const [isIncremental, setIsIncremental] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -83,6 +85,7 @@ export default function Home() {
       if (response.ok) {
         const data = await response.json();
         setVersions(data.versions || []);
+        setHistory(data.history || []);
       }
     } catch (err) {
       console.error("Erro ao buscar versões:", err);
@@ -150,7 +153,10 @@ export default function Home() {
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
-        body: JSON.stringify({ text: text.trim().slice(0, 500) }),
+        body: JSON.stringify({ 
+          text: text.trim().slice(0, 500),
+          isIncremental: isIncremental
+        }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -225,41 +231,95 @@ export default function Home() {
                   </div>
                   <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg">
                     <button
-                      onClick={() => setInputMode("voice")}
-                      className={`p-1.5 rounded-md transition-all ${
-                        inputMode === "voice"
+                      onClick={() => setIsIncremental(false)}
+                      className={`px-3 py-1.5 rounded-md transition-all text-[10px] font-bold uppercase tracking-wider ${
+                        !isIncremental
                           ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
                           : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                       }`}
-                      title="Voz"
                     >
-                      <Mic className="h-3.5 w-3.5" />
+                      Novo
                     </button>
                     <button
-                      onClick={() => setInputMode("manual")}
-                      className={`p-1.5 rounded-md transition-all ${
-                        inputMode === "manual"
+                      onClick={() => setIsIncremental(true)}
+                      className={`px-3 py-1.5 rounded-md transition-all text-[10px] font-bold uppercase tracking-wider ${
+                        isIncremental
                           ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
                           : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                       }`}
-                      title="Manual"
                     >
-                      <MessageSquare className="h-3.5 w-3.5" />
+                      Adicionar
                     </button>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="pt-6 space-y-6">
                 {inputMode === "voice" ? (
-                  <VoiceInput
-                    onTranscription={handleGenerate}
-                    onError={(msg) => setError(msg)}
-                  />
+                  <div className="space-y-4">
+                    <div className="flex justify-center">
+                      <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg">
+                        <button
+                          onClick={() => setInputMode("voice")}
+                          className={`p-1.5 rounded-md transition-all ${
+                            inputMode === "voice"
+                              ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
+                              : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                          }`}
+                          title="Voz"
+                        >
+                          <Mic className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setInputMode("manual")}
+                          className={`p-1.5 rounded-md transition-all ${
+                            inputMode === "manual"
+                              ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
+                              : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                          }`}
+                          title="Manual"
+                        >
+                          <MessageSquare className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                    <VoiceInput
+                      onTranscription={handleGenerate}
+                      onError={(msg) => setError(msg)}
+                    />
+                  </div>
                 ) : (
-                  <PromptInput
-                    onGenerate={handleGenerate}
-                    disabled={isLoading}
-                  />
+                  <div className="space-y-4">
+                    <div className="flex justify-center">
+                      <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg">
+                        <button
+                          onClick={() => setInputMode("voice")}
+                          className={`p-1.5 rounded-md transition-all ${
+                            inputMode === "voice"
+                              ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
+                              : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                          }`}
+                          title="Voz"
+                        >
+                          <Mic className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setInputMode("manual")}
+                          className={`p-1.5 rounded-md transition-all ${
+                            inputMode === "manual"
+                              ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
+                              : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                          }`}
+                          title="Manual"
+                        >
+                          <MessageSquare className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                    <PromptInput
+                      onGenerate={handleGenerate}
+                      disabled={isLoading}
+                    />
+                  </div>
                 )}
 
                 {transcription && (
@@ -294,34 +354,34 @@ export default function Home() {
                   </div>
                 )}
 
-                {versions.length > 0 && (
+                {history.length > 0 && (
                   <div className="space-y-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                     <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
                       <History className="h-3 w-3" />
-                      Histórico de Versões
+                      Passos da Composição
                     </div>
                     <div className="flex flex-col gap-2">
-                      {versions.map((v, i) => (
+                      {history.map((step, i) => (
                         <button
                           key={i}
-                          onClick={() => handleRestoreVersion(v, i)}
-                          className={`flex items-center justify-between p-3 rounded-xl border transition-all group ${
+                          onClick={() => handleRestoreVersion(step.snapshot, i)}
+                          className={`flex flex-col items-start p-3 rounded-xl border transition-all group text-left ${
                             activeVersion === i 
                               ? "bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-900" 
                               : "bg-zinc-50 border-zinc-100 dark:bg-zinc-900/50 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900"
                           }`}
                         >
-                          <div className="flex flex-col items-start gap-1">
-                            <span className={`text-xs font-medium ${activeVersion === i ? "text-blue-700 dark:text-blue-400" : "text-zinc-600 dark:text-zinc-400"}`}>
-                              Versão {versions.length - i}
+                          <div className="flex items-center justify-between w-full mb-1">
+                            <span className={`text-[10px] font-bold uppercase tracking-wider ${activeVersion === i ? "text-blue-700 dark:text-blue-400" : "text-zinc-400 dark:text-zinc-500"}`}>
+                              Passo {history.length - i}
                             </span>
-                            <span className="text-[10px] text-zinc-400 dark:text-zinc-500">
-                              {i === 0 ? "Mais recente" : `Anterior ${i}`}
-                            </span>
+                            {activeVersion === i && (
+                              <span className="text-[10px] font-medium text-blue-500">Ativo</span>
+                            )}
                           </div>
-                          <span className={`text-[10px] font-medium transition-opacity ${activeVersion === i ? "text-blue-500 opacity-100" : "text-blue-500 opacity-0 group-hover:opacity-100"}`}>
-                            {activeVersion === i ? "Ativa" : "Restaurar"}
-                          </span>
+                          <p className={`text-xs line-clamp-2 ${activeVersion === i ? "text-blue-900 dark:text-blue-200" : "text-zinc-700 dark:text-zinc-300"}`}>
+                            {step.instruction}
+                          </p>
                         </button>
                       ))}
                     </div>
