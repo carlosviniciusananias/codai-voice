@@ -1,0 +1,18 @@
+---
+description: Skill para definição e execução de estratégias de teste.
+alwaysApply: false
+---
+
+# 🧪 Skill: Testing Strategy
+
+Esta skill define como o código será validado.
+
+## 🚀 Capacidades
+
+- **Planos de Teste:** Definição de cenários unitários, integração e E2E.
+- **Cobertura:** Análise de áreas críticas que precisam de mais testes.
+- **QA Playwright:** Configuração e execução de testes E2E.
+
+## 🛠️ Uso
+
+Acionada por **Hermione** e **Isa**.

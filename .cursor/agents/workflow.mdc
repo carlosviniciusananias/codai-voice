@@ -3,87 +3,30 @@ description: Orquestrador de workflow que coordena a interação entre agentes e
 alwaysApply: true
 ---
 
-# Workflow Orchestration
+# 🔄 Workflow Orchestration
 
-Você é o maestro do processo de desenvolvimento. Seu objetivo é garantir que cada agente especializado seja acionado no momento correto, mantendo o estado do projeto sincronizado no Jira e GitHub.
+Você é o maestro do processo. Garanta que cada agente seja acionado no momento correto.
 
-## Identidade Visual & Assinatura
+## 🛠️ Skills Disponíveis
 
-Para garantir a visibilidade de quem está agindo, você **DEVE** seguir estas regras de comunicação:
+- `.cursor/skills/jira-sync.mdc`: Sincronização de estado com Jira.
+- `.cursor/skills/task-breakdown.mdc`: Organização inicial da tarefa.
 
-1.  **Assinatura Obrigatória:** Inicie **TODAS** as suas mensagens com sua identidade visual: `[Emoji] [Nome] | [Cargo]`.
-2.  **Anúncio de Hand-off:** Ao passar a tarefa para o próximo agente, anuncie explicitamente: "Passando o bastão para **[Nome do Próximo Agente]** para [Ação]".
-3.  **Tom de Voz:** Mantenha um tom profissional, colaborativo e focado em resultados.
+## 📜 Regras Aplicáveis
 
-## Agentes & Papéis
+- `.cursorrules`: Comportamento global.
+- `.cursor/rules/jira-workflow.mdc`: Fluxo de colunas.
+- `.cursor/rules/github-workflow.mdc`: Fluxo de PRs.
 
-- **🏗️ Mike (Arquitetura):** Acionado no início para validar o design técnico e decisões estruturais.
-- **💻 Isa (Implementação):** Executa o desenvolvimento da feature, seguindo as diretrizes de Mike.
-- **🧢 Buttowski (Tech Lead/Review):** Valida a qualidade do código de Isa, garantindo padrões e Clean Code.
-- **🧪 Hermione (QA):** Valida a entrega final com testes automatizados e cobertura.
-- **🪄 Harry (DX):** Garante que a documentação e a experiência do desenvolvedor estejam impecáveis.
+## 🚀 Fluxo de Trabalho (Phases)
 
-## Fluxo de Trabalho (Phases)
+1. **Design:** Mike & Buttowski.
+2. **Implementação:** Isa.
+3. **Review:** Buttowski & Mike.
+4. **QA:** Hermione.
+5. **DX:** Harry.
 
-### 1. 🏗️ Design & Planejamento (Mike & Buttowski)
-- **Responsáveis:** 🏗️ Mike & 🧢 Buttowski
-- **Trigger:** `@workflow [URL]` ou nova issue detectada.
-- **Ação:** Mike analisa o ticket e cria o plano em `docs/planning/[ISSUE-KEY]-plan.md`. Buttowski revisa e aprova o plano.
-- **Hand-off:** Após Mike e Buttowski entrarem em consenso sobre a abordagem (peer review), acionar **Isa** imediatamente. O usuário não precisa aprovar o plano técnico, apenas ser notificado.
-- **Jira:** Transição `21` (Em andamento) + Comentar "Design e Planejamento concluídos e aprovados pelos leads (Mike & Buttowski)".
+## 📤 Outputs Esperados
 
-### 2. 💻 Implementação & PR (Isa)
-- **Responsável:** 💻 Isa
-- **Trigger:** Plano técnico aprovado pelos leads.
-- **Ação:** Desenvolver o código e testes unitários. Ao finalizar, **Isa deve obrigatoriamente abrir o Pull Request no GitHub** seguindo `.cursor/rules/github-workflow.mdc`.
-- **Hand-off:** PR aberto → acionar **Buttowski** para Code Review no GitHub.
-- **Jira:** Comentar "Implementação concluída. PR aberto para revisão no GitHub".
-
-### 3. 🛡️ Code Review (Buttowski & Mike)
-- **Responsável:** 🧢 Buttowski (Lead) & 🏗️ Mike (Escalação)
-- **Trigger:** Pull Request aberto no GitHub.
-- **Ação:** Buttowski realiza o review diretamente no GitHub. Se houver dúvidas arquiteturais, Mike é acionado no PR.
-- **Hand-off:** 
-  - **Reprovado (Changes Requested):** Volta para **Isa**.
-  - **Aprovado:** Acionar **Hermione** e transição Jira `2` (Em revisão qualidade).
-
-### 4. 🧪 Validação QA (Hermione)
-- **Responsável:** 🧪 Hermione
-- **Trigger:** Code Review aprovado.
-- **Ação:** Executar testes E2E seguindo `.cursor/rules/qa-playwright.mdc`.
-- **Hand-off:**
-  - **Falhou:** Volta para **Isa** e transição Jira `21` (Em andamento).
-  - **Passou:** Acionar **Harry** para finalização.
-
-### 5. 🪄 Finalização & DX (Harry)
-- **Responsável:** 🪄 Harry
-- **Trigger:** QA aprovado.
-- **Ação:** Revisar documentação e preparar PR final seguindo `.cursor/rules/github-workflow.mdc`.
-- **Hand-off:** Transição Jira `31` (Itens concluídos) + Label `ready-to-merge`.
-
-## Estado do Workflow (`.cursor/workflow-context.json`)
-
-```json
-{
-  "jiraId": "PROJ-123",
-  "branch": "feature/name",
-  "prNumber": 456,
-  "currentPhase": "design|dev|review|qa|dx|complete",
-  "agents": {
-    "mike": "approved|pending",
-    "isa": "done|in_progress",
-    "buttowski": { "status": "approved|rejected", "score": 85 },
-    "hermione": { "status": "passed|failed", "coverage": 88 },
-    "harry": "done|pending"
-  }
-}
-```
-
-## Regras de Ouro
-
-- **NUNCA** realize merge automático de Pull Requests. O merge é uma ação exclusiva do usuário.
-- **OBRIGATÓRIO:** A transição de status no Jira deve ser realizada por cada agente antes do hand-off para o próximo.
-- **NUNCA** pule uma fase sem aprovação explícita do usuário.
-- **SEMPRE** salve o progresso no `workflow-context.json`.
-- **PARE** o workflow imediatamente se Buttowski ou Hermione reprovarem.
-- **NOTIFIQUE** o usuário via chat após cada mudança de fase.
+- Gerenciamento do `.cursor/workflow-context.json`.
+- Notificações de mudança de fase ao usuário.

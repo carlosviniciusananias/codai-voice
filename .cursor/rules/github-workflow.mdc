@@ -1,171 +1,24 @@
 ---
-description: Padrões para criação de branches, mensagens de commit e abertura de Pull Requests.
-globs: docs/**/*.md
+description: Protocolo para criação de branches, commits e Pull Requests.
+globs: docs/planning/*.md, docs/reviews/*.md
 ---
 
 # 🐙 GitHub Workflow Standard
-**Responsáveis:** 🔄 Workflow Orchestration & 🪄 Harry
 
-## Configuração do Repositório
+Este protocolo define como as alterações são enviadas ao repositório.
 
-| Atributo        | Valor                   |
-| :-------------- | :---------------------- |
-| **Owner**       | [carlosviniciusananias] |
-| **Repo**        | [codai-voice]           |
-| **Branch Base** | `main`                  |
+## 🚀 Fluxo de PR
 
----
+1. **Branch:** `feature/[ISSUE-KEY]`.
+2. **Commit:** `feat: [Summary] ([ISSUE-KEY])`.
+3. **PR:** Criar via `gh pr create` com o template definido.
 
-## Workflow de PR
+## 🛡️ Code Review
 
-### Quando Executar
+- O review deve ser feito diretamente no GitHub PR.
+- **Buttowski** aprova ou solicita mudanças.
+- **NUNCA** realize merge automático.
 
-**Gatilhos:**
+## 🔄 Responsável
 
-- Quando eu disser: `@pr`, `@github`, `finalizar tarefa`, ou `criar pull request`
-
----
-
-### ETAPA 1: Preparação da Branch
-
-1. **Extrair Issue Key do contexto:**
-   - Buscar em `docs/requirements/[ISSUE-KEY].md` (arquivo mais recente)
-   - Ou pedir ao usuário se não encontrar
-
-2. **Criar branch:**
-
-```
-   Use MCP GitHub: create_branch
-   - owner: [OWNER]
-   - repo: [REPO]
-   - branch: feature/[ISSUE-KEY]
-   - from_branch: main
-```
-
-**Se branch já existir:** Informar ao usuário e perguntar se deseja usar a existente.
-
----
-
-### ETAPA 2: Commits & Push (Automático)
-
-**Ação:** O modelo deve realizar o commit e push das alterações automaticamente.
-
-1. **Listar arquivos modificados**
-2. **Realizar commit e push:**
-
-```bash
-git add .
-git commit -m "feat: [Summary do Jira] ([ISSUE-KEY])"
-git push origin feature/[ISSUE-KEY]
-```
-
----
-
-### ETAPA 3: Criar Pull Request (Automático)
-
-**Ação:** Criar o PR no GitHub imediatamente após o push.
-
-1. **Buscar informações do Jira:** Summary, Description, URL.
-2. **Criar PR via Shell (gh CLI) ou MCP GitHub:**
-
-```bash
-# OBRIGATÓRIO: Criar o PR automaticamente
-git push origin feature/[ISSUE-KEY]
-gh pr create --title "feat: [Summary do Jira] ([ISSUE-KEY])" --body "$(cat <<'EOF'
-[Template abaixo preenchido]
-EOF
-)"
-```
-
-**Template do corpo do PR:**
-
-```markdown
-## 📋 Descrição
-
-[Resumo técnico do que foi implementado]
-
-## 🔗 Vínculos
-
-- **Jira:** [URL do Card]
-- **Requisitos:** `docs/requirements/[ISSUE-KEY].md`
-- **Plano Técnico:** `docs/planning/[ISSUE-KEY]-plan.md`
-- **Code Review:** `docs/reviews/[ISSUE-KEY]-review.md`
-
-## 🛠️ Alterações Principais
-
-- [Listar arquivos principais modificados]
-
-## ✅ Checklist de Qualidade
-
-- [x] Testes unitários implementados
-- [x] Testes E2E (Playwright) criados
-- [x] Code Review IA concluído
-- [x] Documentação atualizada
-
-## Métricas
-
-- Arquivos modificados: [X]
-- Linhas adicionadas: [Y]
-- Cobertura de testes: [Z]%
-```
-
----
-
-### ETAPA 4: Sincronizar com Jira
-
-**Após PR criado com sucesso:**
-
-1. **Obter URL do PR** (retornado pelo MCP GitHub)
-
-2. **Atualizar card no Jira:**
-
-```
-   Use MCP Jira: add_comment
-   - cardId: [ISSUE-KEY]
-   - text: "🔗 **Pull Request Criado:** [URL do PR]"
-```
-
-3. **Adicionar anexo:**
-
-```
-   Use MCP Jira: add_attachment
-   - cardId: [ISSUE-KEY]
-   - url: [URL do PR]
-   - name: "Pull Request #[PR_NUMBER]"
-```
-
-**Mensagem final ao usuário:**
-
-```
-✅ Pull Request criado com sucesso!
-
-🔗 PR: [URL]
-📋 Jira atualizado: [URL do Card]
-
-Próximos passos:
-- Code review humano
-- Testes de CI/CD
-- Merge após aprovação
-```
-
----
-
-## 🛡️ Code Review (GitHub-First)
-
-**Responsável:** 🧢 Buttowski
-
-**Ação:** O review deve ser realizado diretamente no GitHub PR.
-
-1. **Analisar o Diff:** Usar MCP GitHub para ler o diff do PR.
-2. **Comentários:** Adicionar comentários técnicos em linhas específicas via MCP GitHub ou `gh` CLI.
-3. **Decisão:** Aprovar ou solicitar mudanças diretamente no GitHub.
-4. **Escalação:** Em caso de dúvidas arquiteturais, Buttowski deve marcar **Mike** no PR para consulta.
-5. **IMPORTANTE:** Mesmo após aprovação, o agente **NUNCA** deve realizar o merge. O merge deve permanecer pendente para ação manual do usuário.
-
----
-
-## Comandos Disponíveis
-
-- `@pr` - Cria PR do trabalho atual
-- `@github status` - Verifica status do repositório
-- `@github branches` - Lista branches existentes
+**Isa** (Implementação) e **Buttowski** (Review).

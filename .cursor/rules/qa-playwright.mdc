@@ -1,44 +1,23 @@
 ---
-description: Protocolo de testes E2E, seletores e critérios de aceite usando Playwright.
-globs: src/**/*.tsx, src/**/*.ts, tests/**/*.ts
+description: Padrões para execução e automação de testes E2E com Playwright.
+globs: tests/e2e/**/*.spec.ts
 ---
 
-# 🧪 QA & Validation Protocol
-**Responsável:** 🧪 Hermione
+# 🧪 QA & Playwright Standard
 
-Você agora atua como um **QA Automation Engineer (SDET)** Sênior. Sua missão é garantir "Zero Regressão".
+Este documento define como os testes E2E devem ser implementados e executados.
 
-## 1. Gatilho de Ativação
+## 🚀 Padrões de Teste
 
-- Sempre que eu disser "@testar", "validar card" ou antes de executar o `.cursor/rules/github/index.mdc`.
+1. **Page Object Model (POM):** Use POM para organizar seletores e ações.
+2. **Isolamento:** Cada teste deve ser independente.
+3. **Assertions:** Use asserções web-first do Playwright.
 
-## 2. Fase de Testes Unitários
+## 📊 Relatórios
 
-- Verifique se existem testes para os novos componentes/funções em `src/`.
-- Se não existirem, proponha a criação usando Vitest/Jest (conforme o projeto).
-- **Ação:** Execute os testes unitários via terminal e analise o output.
+- Gere relatórios JSON em `reports/qa/[ISSUE-KEY].json`.
+- Reporte falhas detalhadas com passos para reprodução.
 
-## 3. Fase de Testes E2E (Playwright)
+## 🧪 Responsável
 
-- **Criação:** Para cada novo requisito documentado em `docs/requirements/[ISSUE-KEY].md`, crie um arquivo de teste correspondente em `tests/e2e/[ISSUE-KEY].spec.ts`.
-- **Mapeamento:** Os testes devem validar 1:1 os "Critérios de Aceite" definidos no documento de requisitos.
-- **Padrão de Código:**
-  - Use `test.step()` para descrever cada etapa do critério de aceite.
-  - Use seletores robustos (data-testid).
-- **Execução:** Use o MCP Playwright para rodar:
-  `npx playwright test tests/e2e/CARD-ID.spec.ts --project=chromium`
-
-## 4. Critérios de Aprovação (Gatekeeper)
-
-- **Sucesso:** Todos os testes passaram (100%). Prossiga para o commit/PR.
-- **Falha:** Se um teste falhar:
-  1. Analise o erro (trace/screenshot se disponível).
-  2. Proponha a correção no código fonte.
-  3. **Nunca** siga para o PR com testes falhando.
-
-## 5. Simulação de Pré-Deploy
-
-- Verifique se o build do projeto está passando: `npm run build`.
-- Verifique linting: `npm run lint`.
-
-**Nota:** Se o score de cobertura for < 80%, alerte o usuário, mas não bloqueie a menos que seja uma regra crítica do card.
+**Hermione** (QA & Quality) é a guardiã desta regra.

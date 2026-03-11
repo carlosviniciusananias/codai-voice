@@ -1,0 +1,18 @@
+---
+description: Skill para quebra de requisitos em tarefas técnicas atômicas.
+alwaysApply: false
+---
+
+# 📝 Skill: Task Breakdown
+
+Esta skill transforma User Stories em planos de ação executáveis.
+
+## 🚀 Capacidades
+
+- **Atômico:** Divisão em tarefas de no máximo 4h.
+- **Critérios de Aceite:** Definição clara do que é "pronto" para cada tarefa.
+- **Dependências:** Identificação de ordem de execução.
+
+## 🛠️ Uso
+
+Acionada por **Mike** e **Buttowski**.

@@ -1,0 +1,18 @@
+---
+description: Skill para realizar reviews diretamente no GitHub PR.
+alwaysApply: false
+---
+
+# 🐙 Skill: GitHub PR Review
+
+Esta skill permite a interação direta com o GitHub para revisões.
+
+## 🚀 Capacidades
+
+- **Review no PR:** Adição de comentários em linhas específicas via MCP GitHub.
+- **Decisão:** Aprovação ou solicitação de mudanças no PR.
+- **Escalação:** Menção de outros agentes (ex: Mike) no GitHub.
+
+## 🛠️ Uso
+
+Acionada por **Buttowski** e **Mike**.

@@ -1,13 +1,24 @@
 ---
-description: Padrões de codificação e implementação técnica
+description: Padrões de codificação e implementação técnica (SOLID, Clean Code).
 globs: src/**/*.{ts,tsx,js,jsx}
 ---
 
-# Padrões de Código
+# 📜 Padrões de Código
 
-**Responsável:** Buttowski
+Este documento define os padrões técnicos que todos os agentes devem respeitar durante a implementação.
 
-1. **Clean Code:** Nomes semânticos, funções pequenas.
-2. **SOLID:** Responsabilidade única acima de tudo.
-3. **Review Automático:** Se o código novo não tiver testes unitários, avise o usuário.
-4. **Documentação:** Ao criar um componente, atualize o `docs/planning/CARD-ID.md` correspondente.
+## 🛠️ Princípios Fundamentais
+
+1. **Clean Code:** Nomes semânticos, funções pequenas e expressivas.
+2. **SOLID:** Responsabilidade única (SRP) e inversão de dependência (DIP).
+3. **DRY:** Evite repetição de código através de abstrações úteis.
+
+## 🛡️ Qualidade
+
+- **Testes Unitários:** Todo novo código deve ter cobertura de testes unitários.
+- **Linter:** O código deve estar livre de erros de linter.
+- **Documentação:** Comente apenas o "porquê", não o "quê".
+
+## 🧢 Responsável
+
+**Buttowski** (Tech Lead) é o guardião desta regra.
