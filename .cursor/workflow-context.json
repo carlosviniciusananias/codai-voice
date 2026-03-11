@@ -1,13 +1,13 @@
 {
-  "jiraId": "",
-  "branch": "",
+  "jiraId": "CB-8",
+  "branch": "feature/CB-8",
   "prNumber": null,
-  "currentPhase": "idle",
+  "currentPhase": "Design",
   "retryCount": 0,
   "lastError": null,
   "isCrisisMode": false,
   "agents": {
-    "mike": "pending",
+    "mike": "completed",
     "isa": "pending",
     "buttowski": {
       "status": "pending",
