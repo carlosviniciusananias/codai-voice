@@ -5,9 +5,10 @@ import React, { useEffect, useRef, useState } from 'react';
 interface PreviewSandboxProps {
   code: string;
   className?: string;
+  onError?: (error: { message: string; stack?: string; code?: string }) => void;
 }
 
-export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className }) => {
+export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className, onError }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,16 +20,30 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className 
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-          body { font-family: sans-serif; margin: 0; padding: 1rem; }
-          .error-container { color: #ef4444; background: #fee2e2; padding: 1rem; border-radius: 0.5rem; border: 1px solid #fecaca; }
+          body { font-family: sans-serif; margin: 0; padding: 1rem; overflow-x: hidden; }
+          .error-container { color: #ef4444; background: #fee2e2; padding: 1rem; border-radius: 0.5rem; border: 1px solid #fecaca; font-size: 14px; }
         </style>
       </head>
       <body>
         <div id="root"></div>
         <script>
-          window.onerror = function(message, source, lineno, colno, error) {
-            window.parent.postMessage({ type: 'error', message: message }, '*');
+          const reportError = (message, stack) => {
+            window.parent.postMessage({ 
+              type: 'error', 
+              message: message, 
+              stack: stack,
+              timestamp: new Date().toISOString()
+            }, '*');
           };
+
+          window.onerror = function(message, source, lineno, colno, error) {
+            reportError(message, error?.stack);
+            return true; // Prevenir log no console do iframe
+          };
+
+          window.addEventListener('unhandledrejection', (event) => {
+            reportError('Unhandled Promise Rejection: ' + event.reason, event.reason?.stack);
+          });
 
           window.addEventListener('message', (event) => {
             if (event.data.type === 'render') {
@@ -36,15 +51,13 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className 
                 const root = document.getElementById('root');
                 if (root) root.innerHTML = '';
                 
-                // Limpar scripts anteriores
                 const oldScripts = document.querySelectorAll('script[data-sandbox]');
                 oldScripts.forEach(s => s.remove());
 
                 const userCode = event.data.code.trim();
                 
-                // Se o código começa com <, assumimos que é HTML e injetamos no root
                 if (userCode.startsWith('<')) {
-                  if (root) root.innerHTML = userCode;
+                  root.innerHTML = userCode;
                   return;
                 }
 
@@ -52,45 +65,45 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({ code, className 
                 script.type = 'module';
                 script.setAttribute('data-sandbox', 'true');
                 
-                // Injetar o código diretamente. O postMessage já lida com a transferência da string.
-                script.textContent = 'try { ' + userCode + ' } catch (err) { window.parent.postMessage({ type: "error", message: err.message, stack: err.stack }, "*"); }';
+                // Embrulhar em uma IIFE para isolamento e captura de erro imediata
+                script.textContent = \`(function() {
+                  try {
+                    \${userCode}
+                  } catch (err) {
+                    window.parent.postMessage({ 
+                      type: "error", 
+                      message: err.message, 
+                      stack: err.stack 
+                    }, "*");
+                  }
+                })();\`;
                 
                 document.body.appendChild(script);
               } catch (err) {
-                window.parent.postMessage({ 
-                  type: 'error', 
-                  message: err.message 
-                }, '*');
+                reportError(err.message, err.stack);
               }
             }
-          });
-
-          // Capturar erros de carregamento de recursos ou outros erros não pegos pelo try-catch
-          window.addEventListener('error', (event) => {
-            window.parent.postMessage({ 
-              type: 'error', 
-              message: event.message || 'Unknown runtime error'
-            }, '*');
-          }, true);
-
-          // Capturar promessas rejeitadas
-          window.addEventListener('unhandledrejection', (event) => {
-            window.parent.postMessage({ 
-              type: 'error', 
-              message: 'Unhandled Promise Rejection: ' + event.reason 
-            }, '*');
           });
         </script>
       </body>
       </html>
-    `;
+    \`;
   };
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'error') {
+        const errorData = {
+          message: event.data.message,
+          stack: event.data.stack,
+          code: code
+        };
         setError(event.data.message);
         console.error('Sandbox Error:', event.data);
+        
+        if (onError) {
+          onError(errorData);
+        }
       }
     };
 
