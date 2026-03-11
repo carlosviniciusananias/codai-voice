@@ -1,0 +1,18 @@
+---
+description: Skill para design de arquitetura, ADRs e diagramas de sistema.
+alwaysApply: false
+---
+
+# 🏗️ Skill: Architecture & Design
+
+Esta skill capacita o agente a criar e manter a arquitetura do sistema.
+
+## 🚀 Capacidades
+
+- **ADRs:** Criação de Architectural Decision Records em `docs/adr/`.
+- **Diagramas:** Geração de diagramas Mermaid para fluxos e infraestrutura.
+- **Trade-offs:** Análise crítica de escolhas tecnológicas.
+
+## 🛠️ Uso
+
+Acionada por **Mike** durante a fase de Design.

@@ -1,0 +1,18 @@
+---
+description: Skill para revisão de código técnica e de padrões.
+alwaysApply: false
+---
+
+# 🛡️ Skill: Code Review
+
+Esta skill capacita o agente a realizar revisões de código profundas.
+
+## 🚀 Capacidades
+
+- **Clean Code:** Identificação de nomes ruins e funções complexas.
+- **SOLID:** Verificação de violações de princípios de design.
+- **Segurança:** Identificação de vulnerabilidades básicas.
+
+## 🛠️ Uso
+
+Acionada por **Buttowski** e **Isa** (auto-review).

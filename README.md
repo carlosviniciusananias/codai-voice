@@ -22,6 +22,10 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## ✨ Key Features
 
+### 🤖 AI Orchestration
+A sophisticated multi-agent system (Mike, Isa, Buttowski, Hermione, Harry) that automates the entire development lifecycle from design to deployment.
+[Explore the AI Architecture &rarr;](docs/ai/architecture.md)
+
 ### 🎙️ Voice-to-Code
 Generate high-quality React components using just your voice. Powered by AI to transform natural language into functional TSX code.
 

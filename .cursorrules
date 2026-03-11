@@ -6,43 +6,39 @@ Este projeto utiliza uma orquestração de agentes especializados para garantir 
 
 Sempre que o usuário iniciar uma tarefa ou usar o comando `@workflow`, você DEVE:
 
-1.  **Carregar Orquestração:** Leia `.cursor/agents/workflow.mdc` como fonte primária de verdade para o fluxo.
-2.  **Seguir as Fases:** Respeite a sequência: Design (Mike & Buttowski) → Implementação & PR (Isa) → Review (Buttowski & Mike no GitHub) → QA (Hermione) → DX (Harry).
-3.  **Autonomia Técnica:** Mike e Buttowski têm autonomia para aprovar planos técnicos e revisões de código. O usuário deve ser consultado apenas para decisões de negócio ou mudanças de escopo.
-4.  **Manter Estado:** Atualize e consulte sempre o arquivo `.cursor/workflow-context.json` para persistir o progresso entre interações.
+1. **Carregar Orquestração:** Leia `.cursor/agents/workflow.mdc` como fonte primária de verdade para o fluxo.
+2. **Seguir as Fases:** Respeite a sequência: Design (Mike & Buttowski) → Implementação & PR (Isa) → Review (Buttowski & Mike no GitHub) → QA (Hermione) → DX (Harry).
+3. **Autonomia Técnica:** Mike e Buttowski têm autonomia para aprovar planos técnicos e revisões de código. O usuário deve ser consultado apenas para decisões de negócio ou mudanças de escopo.
+4. **Manter Estado:** Atualize e consulte sempre o arquivo `.cursor/workflow-context.json` para persistir o progresso entre interações.
 
 ## ⌨️ Comandos e Atalhos
 
 Para comandos específicos e invocações manuais de agentes, consulte:
--   `.cursor/commands/commands.mdc`
+
+- `.cursor/commands/commands.mdc`
 
 ## 🎫 Integração Jira
 
-A movimentação de cards deve seguir rigorosamente os IDs de transição definidos em `.cursor/rules/jira-workflow.mdc`:
-
-| Fase | Card vai para | Trigger | ID Transição |
-| :--- | :--- | :--- | :--- |
-| Início | Em andamento | `@workflow` iniciado | `21` |
-| Review Aprova | Em revisão qualidade | Code Review passou | `2` |
-| QA Falha | Em andamento | Testes falharam | `21` |
-| QA Aprova | Itens concluídos | Testes passaram | `31` |
+A movimentação de cards deve seguir rigorosamente os IDs de transição definidos em `.cursor/rules/jira-workflow.mdc`.
 
 ## 🛠️ Regras de Execução
 
 ### SEMPRE faça:
--   Carregue os arquivos `.mdc` relevantes antes de executar qualquer ação.
--   Use os MCPs de **Jira** e **GitHub** para todas as integrações externas.
--   **Isa deve obrigatoriamente abrir o Pull Request** no GitHub ao finalizar a implementação.
--   **Buttowski deve realizar o review diretamente no GitHub PR.**
--   Valide o código com testes (Hermione) antes de finalizar a tarefa.
+
+- Carregue os arquivos `.mdc` relevantes (Agentes, Skills e Regras) antes de executar qualquer ação.
+- Use os MCPs de **Jira** e **GitHub** para todas as integrações externas.
+- **Isa deve obrigatoriamente abrir o Pull Request** no GitHub ao finalizar a implementação.
+- **Buttowski deve realizar o review diretamente no GitHub PR.**
+- Valide o código com testes (Hermione) antes de finalizar a tarefa.
 
 ### NUNCA faça:
--   Pule fases do workflow sem autorização explícita.
--   Mova cards no Jira em comandos manuais (exceto se especificado no `commands.mdc`).
--   Ignore falhas de linter ou testes durante a fase de QA.
+
+- Pule fases do workflow sem autorização explícita.
+- Mova cards no Jira em comandos manuais (exceto se especificado no `commands.mdc`).
+- Ignore falhas de linter ou testes durante a fase de QA.
 
 ## 🔍 Troubleshooting
 
--   **MCPs:** Verifique se os servidores MCP estão ativos se as chamadas falharem.
--   **Contexto:** Se o workflow parecer "perdido", releia o `.cursor/workflow-context.json`.
--   **Regras:** Em caso de dúvida sobre padrões, consulte `.cursor/rules/code-standards.mdc`.
+- **MCPs:** Verifique se os servidores MCP estão ativos se as chamadas falharem.
+- **Contexto:** Se o workflow parecer "perdido", releia o `.cursor/workflow-context.json`.
+- **Regras:** Em caso de dúvida sobre padrões, consulte `.cursor/rules/code-standards.mdc`.

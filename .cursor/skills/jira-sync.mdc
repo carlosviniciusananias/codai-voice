@@ -1,0 +1,18 @@
+---
+description: Skill para sincronização de estado e comentários com o Jira.
+alwaysApply: false
+---
+
+# 🎫 Skill: Jira Sync
+
+Esta skill gerencia a comunicação e movimentação de cards no Jira.
+
+## 🚀 Capacidades
+
+- **Transição:** Movimentação de cards entre colunas (IDs `11`, `21`, `2`, `31`).
+- **Comentários:** Postagem de sumários de fase e relatórios.
+- **Anexos:** Vinculação de PRs e documentos ao card.
+
+## 🛠️ Uso
+
+Acionada por **Workflow**, **Buttowski** e **Hermione**.

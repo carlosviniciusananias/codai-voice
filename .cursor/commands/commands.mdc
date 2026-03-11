@@ -3,11 +3,11 @@ description: Comandos rápidos para acionar agentes especializados de forma isol
 alwaysApply: true
 ---
 
-# ⌨Comandos do Sistema
+# ⌨️ Comandos do Sistema
 
 Use estes comandos para invocar agentes específicos fora do workflow principal.
 
-## Comando Mestre
+## 🔄 Comando Mestre
 
 ### `@workflow [URL_JIRA]`
 
@@ -17,55 +17,49 @@ Use estes comandos para invocar agentes específicos fora do workflow principal.
 
 ---
 
-## Agentes Especializados (Comandos Manuais)
-
-> **Nota:** Comandos manuais **NÃO** movem cards no Jira automaticamente (exceto `@isa`).
+## 🏗️ Agentes Especializados (Comandos Manuais)
 
 ### `@mike [JIRA-ID]`
 
 **Agente:** Mike (Principal Engineer)
-**Ação:** Realiza um review arquitetural isolado ou propõe um design técnico.
-**Output:** `docs/planning/[JIRA-ID]-plan.md`
+**Ação:** Review arquitetural ou design técnico.
+**Usa Skills:** `architecture-design`, `task-breakdown`.
 
 ### `@isa [JIRA-ID]`
 
 **Agente:** Isa (Full Stack Engineer)
-**Ação:** Implementação completa de uma feature ou correção de bug.
-**Output:** Código + Testes Unitários + Pull Request.
-**Jira:** Move para "Em andamento".
+**Ação:** Implementação de feature ou correção de bug.
+**Usa Skills:** `code-review`, `github-pr-review`.
 
 ### `@buttowski [PR-NUM]`
 
 **Agente:** Buttowski (Tech Lead)
-**Ação:** Realiza um Code Review rigoroso em um PR existente.
-**Output:** Comentários no GitHub + `docs/reviews/[JIRA-ID]-review.md`.
+**Ação:** Code Review rigoroso em um PR existente.
+**Usa Skills:** `code-review`, `github-pr-review`.
 
 ### `@hermione [JIRA-ID]`
 
 **Agente:** Hermione (QA & Quality)
-**Ação:** Gera e executa a suíte de testes (E2E/Integração).
-**Output:** `reports/qa/[JIRA-ID].json` + Testes em `tests/e2e/`.
+**Ação:** Geração e execução de suíte de testes (E2E/Integração).
+**Usa Skills:** `testing-strategy`.
 
 ### `@harry [JIRA-ID ou PR-NUM]`
 
 **Agente:** Harry (Developer Advocate)
-**Ação:** Revisa a experiência do desenvolvedor (DX) e documentação.
-**Output:** Atualização de README, guias e exemplos de código.
+**Ação:** Revisão de DX e documentação.
+**Usa Skills:** `documentation-dx`.
 
 ---
 
-## Exemplos de Uso
+## 🚀 Exemplos de Uso
 
 ```bash
-# Iniciar uma tarefa do zero
+# Iniciar uma tarefa completa
 @workflow CB-123
 
-# Pedir apenas a implementação de uma correção
-@isa CB-124
+# Pedir apenas o design técnico
+@mike CB-124
 
 # Validar qualidade de um PR aberto
 @buttowski 456
-
-# Gerar testes para uma feature pronta
-@hermione CB-123
 ```

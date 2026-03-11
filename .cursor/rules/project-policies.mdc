@@ -1,20 +1,22 @@
 ---
-description: Políticas globais do projeto, incluindo versionamento semver e regras de evolução pré-v1.
-alwaysApply: true
+description: Políticas de negócio, versionamento e gestão de alterações.
+globs: package.json, .changeset/*.md
 ---
 
 # 📜 Project Policies
 
-## Alterações significativas (Pré-v1)
+## 🔄 Alterações Significativas (Pré-v1)
 
-Todos os pacotes anteriores à versão 1 — sem usuários externos
-Mudanças radicais são bem-vindas — adote designs melhores.
-Sem shims de retrocompatibilidade, sem guias de migração, sem aliases obsoletos.
-Consolidar de forma agressiva (mesclar pacotes, mover funções)
-Só pause se isso afetar PRs ativos/trabalhos em andamento.
+- O projeto está em fase inicial (pré-v1).
+- Mudanças radicais são bem-vindas para melhorar o design.
+- Sem necessidade de retrocompatibilidade ou guias de migração.
 
-## Semver
+## 🏷️ Semver & Versionamento
 
-Cada alteração = patch— nunca menor/maior, a menos que o usuário diga explicitamente o contrário.
-Os conjuntos de alterações .changeset/\*.mdsempre usampatch
-Consulte trabalhos futuros como v0.1.x, nuncav0.2
+- Cada alteração = **patch** (nunca minor/major sem pedido explícito).
+- Use `.changeset/*.md` para documentar mudanças.
+- Versão atual deve ser considerada v0.1.x.
+
+## 🏗️ Responsável
+
+**Mike** (Principal Engineer) define estas políticas.
