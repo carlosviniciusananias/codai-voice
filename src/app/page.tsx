@@ -5,7 +5,7 @@ import VoiceInput from "./components/VoiceInput";
 import PromptInput from "./components/PromptInput";
 import { PreviewSandbox } from "../components/PreviewSandbox";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
-import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare, History, Lightbulb } from "lucide-react";
+import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare, History, Lightbulb, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { downloadAsTsx, sanitizeFileName } from "./utils/export-utils";
 import { ExplanationSidebar } from "./components/ExplanationSidebar";
@@ -18,7 +18,37 @@ export default function Home() {
   const [isExporting, setIsExporting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sandboxError, setSandboxError] = useState<{ message: string; stack?: string; code?: string } | null>(null);
   const [inputMode, setInputMode] = useState<"voice" | "manual">("voice");
+
+  const handleSandboxError = async (errorData: { message: string; stack?: string; code?: string }) => {
+    setSandboxError(errorData);
+    
+    // Logar o erro no backend
+    try {
+      await fetch("/api/log-error", {
+        method: "POST",
+        body: JSON.stringify({
+          ...errorData,
+          timestamp: new Date().toISOString(),
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (err) {
+      console.error("Falha ao enviar log de erro:", err);
+    }
+  };
+
+  const handleFixWithAI = () => {
+    if (!sandboxError) return;
+    
+    const fixPrompt = `O código anterior gerou o seguinte erro de renderização: "${sandboxError.message}". 
+    Por favor, corrija o código mantendo a funcionalidade original. 
+    Contexto do erro: ${sandboxError.stack || 'Não disponível'}`;
+    
+    handleGenerate(fixPrompt);
+    setSandboxError(null);
+  };
 
   // Estados para a funcionalidade Explain-to-Me
   const [explanation, setExplanation] = useState("");
@@ -358,9 +388,47 @@ export default function Home() {
                   <CardTitle>Preview</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="flex-1 p-0 overflow-hidden bg-zinc-50/30 dark:bg-zinc-900/10">
+              <CardContent className="flex-1 p-0 overflow-hidden bg-zinc-50/30 dark:bg-zinc-900/10 relative">
+                {sandboxError && (
+                  <div className="absolute inset-0 z-20 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-sm flex items-center justify-center p-6 text-center">
+                    <div className="max-w-md space-y-4">
+                      <div className="mx-auto w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                        <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Erro de Renderização</h3>
+                        <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-3">
+                          {sandboxError.message}
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Button 
+                          onClick={handleFixWithAI}
+                          className="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                          size="sm"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                          Corrigir com IA
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          onClick={() => setSandboxError(null)}
+                          className="text-xs"
+                          size="sm"
+                        >
+                          Ignorar e ver código
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {generatedCode ? (
-                  <PreviewSandbox code={generatedCode} className="border-none rounded-none" />
+                  <PreviewSandbox 
+                    code={generatedCode} 
+                    className="border-none rounded-none" 
+                    onError={handleSandboxError}
+                  />
                 ) : (
                   <div className="flex items-center justify-center w-full h-full min-h-[400px]">
                     <div className="text-center space-y-3 opacity-40">
