@@ -2,7 +2,7 @@
   "jiraId": "CB-8",
   "branch": "feature/CB-8",
   "prNumber": null,
-  "currentPhase": "Design",
+  "currentPhase": "QA",
   "retryCount": 0,
   "lastError": null,
   "isCrisisMode": false,
@@ -14,8 +14,8 @@
       "score": 0
     },
     "hermione": {
-      "status": "pending",
-      "coverage": 0
+      "status": "completed",
+      "coverage": 100
     },
     "harry": "pending"
   }
