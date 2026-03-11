@@ -5,12 +5,14 @@ import React, { useEffect, useRef, useState } from "react";
 interface PreviewSandboxProps {
   code: string;
   className?: string;
+  width?: string | number;
   onError?: (error: { message: string; stack?: string; code?: string }) => void;
 }
 
 export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({
   code,
   className,
+  width = "100%",
   onError,
 }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -129,20 +131,25 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({
 
   return (
     <div
-      className={`relative w-full h-full min-h-[400px] border rounded-lg overflow-hidden bg-white ${className || ""}`}
+      className={`relative w-full h-full min-h-[400px] border rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-950/50 flex justify-center ${className || ""}`}
     >
       {error && (
         <div className="absolute top-0 left-0 right-0 p-4 bg-red-50 border-b border-red-200 text-red-600 z-10 text-sm">
           <strong>Render Error:</strong> {error}
         </div>
       )}
-      <iframe
-        ref={iframeRef}
-        title="Preview Sandbox"
-        sandbox="allow-scripts"
-        srcDoc={generateSandboxHtml()}
-        className="w-full h-full border-none"
-      />
+      <div 
+        className="h-full bg-white shadow-sm transition-all duration-300 ease-in-out overflow-hidden"
+        style={{ width, willChange: "width" }}
+      >
+        <iframe
+          ref={iframeRef}
+          title="Preview Sandbox"
+          sandbox="allow-scripts"
+          srcDoc={generateSandboxHtml()}
+          className="w-full h-full border-none"
+        />
+      </div>
     </div>
   );
 };

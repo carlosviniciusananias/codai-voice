@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import VoiceInput from "./components/VoiceInput";
 import PromptInput from "./components/PromptInput";
-import { PreviewSandbox } from "../components/PreviewSandbox";
+import { PreviewSandbox, PreviewToolbar, type PreviewWidth } from "../components/PreviewSandbox";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare, History, Lightbulb, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "./components/ui/button";
@@ -20,6 +20,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [sandboxError, setSandboxError] = useState<{ message: string; stack?: string; code?: string } | null>(null);
   const [inputMode, setInputMode] = useState<"voice" | "manual">("voice");
+  const [previewWidth, setPreviewWidth] = useState<PreviewWidth>("100%");
 
   const handleSandboxError = async (errorData: { message: string; stack?: string; code?: string }) => {
     setSandboxError(errorData);
@@ -401,9 +402,15 @@ export default function Home() {
 
             <Card className="flex flex-col border-zinc-200/60 dark:border-zinc-800/60 shadow-lg">
               <CardHeader className="border-b border-zinc-100 dark:border-zinc-800 py-3">
-                <div className="flex items-center gap-2">
-                  <Eye className="h-4 w-4 text-zinc-500" />
-                  <CardTitle>Preview</CardTitle>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Eye className="h-4 w-4 text-zinc-500" />
+                    <CardTitle>Preview</CardTitle>
+                  </div>
+                  <PreviewToolbar 
+                    currentWidth={previewWidth} 
+                    onWidthChange={setPreviewWidth} 
+                  />
                 </div>
               </CardHeader>
               <CardContent className="flex-1 p-0 overflow-hidden bg-zinc-50/30 dark:bg-zinc-900/10 relative">
@@ -444,6 +451,7 @@ export default function Home() {
                 {generatedCode ? (
                   <PreviewSandbox 
                     code={generatedCode} 
+                    width={previewWidth}
                     className="border-none rounded-none" 
                     onError={handleSandboxError}
                   />
