@@ -29,6 +29,10 @@ A sophisticated multi-agent system (Mike, Isa, Buttowski, Hermione, Harry) that 
 ### 🎙️ Voice-to-Code
 Generate high-quality React components using just your voice. Powered by AI to transform natural language into functional TSX code.
 
+### 🧩 Composição Incremental (CB-9)
+Construa interfaces complexas passo a passo. Adicione elementos, edite seções e mantenha o contexto do seu layout através de múltiplos comandos.
+[Saiba como compor componentes &rarr;](docs/features/CB-9-multi-step-assembly.md)
+
 ### 💡 Explain-to-Me (CB-7)
 Understand the *why* behind the generated code. Our AI Tutor explains technical decisions, layout choices, and best practices.
 [Read the full documentation &rarr;](docs/features/explain-to-me.md)
