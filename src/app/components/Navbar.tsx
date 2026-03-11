@@ -14,30 +14,10 @@ export function Navbar() {
               codaí voice
             </p>
             <p className="hidden text-xs text-zinc-500 md:block dark:text-zinc-400">
-              Fale. Gere componentes. Refine.
+              Fale e veja a mágica acontecer.
             </p>
           </div>
         </div>
-
-        <nav
-          aria-label="Navegação principal"
-          className="flex items-center gap-1 text-xs font-medium text-zinc-600 dark:text-zinc-300"
-        >
-          <Link href="/">
-            <Button variant="default" size="sm" className="h-8 px-3">
-              Studio
-            </Button>
-          </Link>
-          <Button variant="ghost" size="sm" className="h-8 px-3 text-zinc-400 dark:text-zinc-500 cursor-not-allowed">
-            Histórico
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8 px-3 text-zinc-400 dark:text-zinc-500 cursor-not-allowed">
-            Configurações
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8 px-3 text-zinc-400 dark:text-zinc-500 cursor-not-allowed">
-            Ajuda
-          </Button>
-        </nav>
       </div>
     </header>
   );

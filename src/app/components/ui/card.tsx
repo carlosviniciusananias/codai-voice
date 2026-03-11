@@ -35,7 +35,7 @@ export function CardTitle({ className = "", ...props }: CardTitleProps) {
   return (
     <h2
       className={[
-        "text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-50",
+        "text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 mr-2",
         className,
       ]
         .filter(Boolean)
