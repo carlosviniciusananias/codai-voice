@@ -99,10 +99,13 @@ export async function POST(request: NextRequest) {
     if (sessionId) {
       try {
         await saveVersion(sessionId, component);
+        console.log(`[api/generate] Version saved for session: ${sessionId}`);
       } catch (saveErr) {
-        console.error("[api/generate] Error saving version:", saveErr);
+        console.error(`[api/generate] Error saving version for session ${sessionId}:`, saveErr);
         // Não bloqueia a resposta se falhar ao salvar a versão
       }
+    } else {
+      console.warn("[api/generate] No session_id found in cookies");
     }
 
     return NextResponse.json({ component });

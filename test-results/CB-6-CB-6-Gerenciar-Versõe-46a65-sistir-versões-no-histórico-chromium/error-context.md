@@ -1,0 +1,89 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]: cv
+          - generic [ref=e7]:
+            - paragraph [ref=e8]: codaí voice
+            - paragraph [ref=e9]: Fale. Gere componentes. Refine.
+        - navigation "Navegação principal" [ref=e10]:
+          - link "Studio" [ref=e11] [cursor=pointer]:
+            - /url: /
+            - button "Studio" [ref=e12]
+          - button "Histórico" [ref=e13]
+          - button "Configurações" [ref=e14]
+          - button "Ajuda" [ref=e15]
+    - main [ref=e16]:
+      - region "Studio de geração de componentes por voz" [ref=e17]:
+        - generic [ref=e18]:
+          - paragraph [ref=e20]: Transforme suas ideias em realidade. Descreva o componente e veja a mágica acontecer em tempo real.
+          - generic [ref=e22]: Pronto
+        - generic [ref=e26]:
+          - generic [ref=e28]:
+            - generic [ref=e30]:
+              - generic [ref=e31]:
+                - img [ref=e32]
+                - heading "Prompt Manual" [level=2] [ref=e34]
+              - generic [ref=e35]:
+                - button "Voz" [ref=e36]:
+                  - img [ref=e37]
+                - button "Manual" [ref=e40]:
+                  - img [ref=e41]
+            - generic [ref=e43]:
+              - generic [ref=e44]:
+                - generic [ref=e45]:
+                  - textbox "Descreva o componente que você deseja criar..." [ref=e46]: Card de produto
+                  - generic [ref=e48]: 15/500
+                - button "Gerar componente" [ref=e49]:
+                  - img [ref=e50]
+                  - text: Gerar componente
+              - generic [ref=e53]:
+                - paragraph [ref=e54]: Transcrição
+                - paragraph [ref=e56]: “Card de produto”
+              - alert [ref=e57]:
+                - paragraph [ref=e58]: Ops! Algo deu errado
+                - paragraph [ref=e59]: 429 Too Many Requests
+              - generic [ref=e60]:
+                - generic [ref=e61]:
+                  - img [ref=e62]
+                  - text: Histórico de Versões
+                - button "Versão 1 Mais recente Restaurar" [ref=e67]:
+                  - generic [ref=e68]:
+                    - generic [ref=e69]: Versão 1
+                    - generic [ref=e70]: Mais recente
+                  - generic [ref=e71]: Restaurar
+          - generic [ref=e73]:
+            - generic [ref=e74]:
+              - generic [ref=e76]:
+                - generic [ref=e77]:
+                  - img [ref=e78]
+                  - heading "Código Fonte" [level=2] [ref=e82]
+                - generic [ref=e83]:
+                  - button "Explicar Código" [ref=e84]:
+                    - img [ref=e85]
+                    - text: Explicar Código
+                  - button "Baixar .tsx" [ref=e87]:
+                    - img [ref=e88]
+                    - text: Baixar .tsx
+                  - generic [ref=e91]: TSX
+              - code [ref=e95]: <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Clique aqui</button>
+            - generic [ref=e96]:
+              - generic [ref=e98]:
+                - img [ref=e99]
+                - heading "Preview" [level=2] [ref=e102]
+              - iframe [ref=e105]:
+                - button "Clique aqui" [ref=f1e3]
+    - contentinfo [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - paragraph [ref=e109]: Codaí Voice
+          - paragraph [ref=e110]: Experimento pessoal © 2026
+        - paragraph [ref=e111]: Design focado em clareza, velocidade e acessibilidade.
+  - button "Open Next.js Dev Tools" [ref=e117] [cursor=pointer]:
+    - img [ref=e118]
+  - alert [ref=e121]
+```
