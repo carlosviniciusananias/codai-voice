@@ -1,0 +1,22 @@
+{
+  "jiraId": "",
+  "branch": "",
+  "prNumber": null,
+  "currentPhase": "idle",
+  "retryCount": 0,
+  "lastError": null,
+  "isCrisisMode": false,
+  "agents": {
+    "mike": "pending",
+    "isa": "pending",
+    "buttowski": {
+      "status": "pending",
+      "score": 0
+    },
+    "hermione": {
+      "status": "pending",
+      "coverage": 0
+    },
+    "harry": "pending"
+  }
+}
