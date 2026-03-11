@@ -2,8 +2,8 @@
 
 import ReactMarkdown from "react-markdown";
 import { X, Lightbulb } from "lucide-react";
-import { Button } from "./ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { Button } from "../components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 
 interface ExplanationSidebarProps {
   explanation: string;
