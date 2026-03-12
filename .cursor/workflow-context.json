@@ -1,7 +1,7 @@
 {
   "jiraId": "CB-10",
   "branch": "feature/CB-10-dx-experience",
-  "prNumber": null,
+  "prNumber": 22,
   "currentPhase": "DX",
   "retryCount": 0,
   "lastError": null,
