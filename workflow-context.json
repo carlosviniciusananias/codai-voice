@@ -1,0 +1,27 @@
+{
+  "jiraId": "CB-12",
+  "branch": "feature/CB-12-ui-preview-consolidation",
+  "prNumber": null,
+  "currentPhase": "Implementation",
+  "retryCount": 0,
+  "lastError": null,
+  "isCrisisMode": false,
+  "agents": {
+    "mike": "completed",
+    "buttowski": "completed",
+    "isa": "in_progress",
+    "hermione": "pending",
+    "harry": "pending"
+  },
+  "contextMemory": {
+    "summary": "[CV] - Refatoração da UI de Preview: Consolidação de Código e Ações",
+    "description": "Reestruturar a interface de visualização para otimizar o espaço e a experiência do usuário. Unificar código e preview em uma única coluna.",
+    "history": [
+      {
+        "phase": "Design",
+        "agent": "Mike & Buttowski",
+        "result": "Plano técnico criado em docs/planning/CB-12-plan.md"
+      }
+    ]
+  }
+}
