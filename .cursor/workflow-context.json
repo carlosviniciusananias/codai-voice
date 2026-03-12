@@ -1,15 +1,15 @@
 {
   "jiraId": "CB-11",
   "branch": "feature/CB-11-red-buttons",
-  "prNumber": null,
-  "currentPhase": "Implementacao",
+  "prNumber": 23,
+  "currentPhase": "Review",
   "retryCount": 0,
   "lastError": null,
   "isCrisisMode": false,
   "agents": {
     "mike": "completed",
-    "isa": "in_progress",
-    "buttowski": "pending",
+    "isa": "completed",
+    "buttowski": "in_progress",
     "hermione": {
       "status": "pending",
       "coverage": 0
