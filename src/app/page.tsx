@@ -234,7 +234,7 @@ export default function Home() {
                       onClick={() => setIsIncremental(false)}
                       className={`px-3 py-1.5 rounded-md transition-all text-[10px] font-bold uppercase tracking-wider ${
                         !isIncremental
-                          ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
+                          ? "bg-red-600 shadow-sm text-white"
                           : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                       }`}
                     >
@@ -244,7 +244,7 @@ export default function Home() {
                       onClick={() => setIsIncremental(true)}
                       className={`px-3 py-1.5 rounded-md transition-all text-[10px] font-bold uppercase tracking-wider ${
                         isIncremental
-                          ? "bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100"
+                          ? "bg-red-600 shadow-sm text-white"
                           : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
                       }`}
                     >

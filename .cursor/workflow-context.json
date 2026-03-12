@@ -1,20 +1,20 @@
 {
-  "jiraId": "CB-10",
-  "branch": "feature/CB-10-dx-experience",
-  "prNumber": 22,
-  "currentPhase": "DX",
+  "jiraId": "CB-11",
+  "branch": "feature/CB-11-red-buttons",
+  "prNumber": null,
+  "currentPhase": "Implementacao",
   "retryCount": 0,
   "lastError": null,
   "isCrisisMode": false,
   "agents": {
     "mike": "completed",
-    "isa": "completed",
-    "buttowski": "completed",
+    "isa": "in_progress",
+    "buttowski": "pending",
     "hermione": {
-      "status": "completed",
-      "coverage": 80
+      "status": "pending",
+      "coverage": 0
     },
-    "harry": "completed"
+    "harry": "pending"
   },
   "contextMemory": {
     "currentLayout": "",
