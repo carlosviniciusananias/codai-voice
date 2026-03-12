@@ -5,6 +5,7 @@ import VoiceInput from "./components/VoiceInput";
 import PromptInput from "./components/PromptInput";
 import { PreviewSandbox, PreviewToolbar, type PreviewWidth } from "../components/PreviewSandbox";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "./components/ui/tabs";
 import { Loader2, Mic, Code2, Eye, Download, CheckCircle2, MessageSquare, History, Lightbulb, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { downloadAsTsx, sanitizeFileName } from "./utils/export-utils";
@@ -23,6 +24,7 @@ export default function Home() {
   const [sandboxError, setSandboxError] = useState<{ message: string; stack?: string; code?: string } | null>(null);
   const [inputMode, setInputMode] = useState<"voice" | "manual">("voice");
   const [previewWidth, setPreviewWidth] = useState<PreviewWidth>("100%");
+  const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
 
   const handleSandboxError = async (errorData: { message: string; stack?: string; code?: string }) => {
     setSandboxError(errorData);
@@ -392,57 +394,142 @@ export default function Home() {
           </div>
 
         <div className="flex flex-col gap-6">
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2 flex-1">
-            <Card className="flex flex-col overflow-hidden border-zinc-200/60 dark:border-zinc-800/60 shadow-lg">
-              <CardHeader className="border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 py-3">
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center gap-2">
-                    <Code2 className="h-4 w-4 text-zinc-500" />
-                    <CardTitle>Código Fonte</CardTitle>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {showSuccess && (
-                      <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400 animate-in fade-in slide-in-from-right-2">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Exportado!
-                      </span>
-                    )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 px-2 text-[10px] gap-1.5 border-zinc-200 dark:border-zinc-700 hover:bg-amber-50 dark:hover:bg-amber-950/30 hover:text-amber-600"
-                      onClick={handleExplain}
-                      disabled={!generatedCode || isExplaining}
-                    >
-                      {isExplaining ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <Lightbulb className="h-3 w-3" />
-                      )}
-                      {isExplaining ? "Explicando..." : "Explicar Código"}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 px-2 text-[10px] gap-1.5 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                      onClick={handleExport}
-                      disabled={!generatedCode || isExporting}
-                    >
-                      {isExporting ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <Download className="h-3 w-3" />
-                      )}
-                      {isExporting ? "Exportando..." : "Baixar .tsx"}
-                    </Button>
-                    <span className="text-[10px] font-mono bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-600 dark:text-zinc-400">
-                      TSX
-                    </span>
-                  </div>
+          <Card className="flex flex-col border-zinc-200/60 dark:border-zinc-800/60 shadow-lg overflow-hidden">
+            <CardHeader className="border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 py-3 mb-0">
+              <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4">
+                <div className="flex items-center gap-4">
+                  <Tabs className="w-auto">
+                    <TabsList>
+                      <TabsTrigger 
+                        value="preview" 
+                        active={activeTab === "preview"}
+                        onClick={() => setActiveTab("preview")}
+                        className="gap-2"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        Preview
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="code" 
+                        active={activeTab === "code"}
+                        onClick={() => setActiveTab("code")}
+                        className="gap-2"
+                      >
+                        <Code2 className="h-3.5 w-3.5" />
+                        Código
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+
+                  {activeTab === "preview" && (
+                    <div className="hidden md:block border-l border-zinc-200 dark:border-zinc-700 h-6 mx-1" />
+                  )}
+                  
+                  {activeTab === "preview" && (
+                    <PreviewToolbar 
+                      currentWidth={previewWidth} 
+                      onWidthChange={setPreviewWidth} 
+                    />
+                  )}
                 </div>
-              </CardHeader>
-              <CardContent className="p-0 flex-1 bg-zinc-950">
-                <div className="relative h-full min-h-[400px]">
+
+                <div className="flex items-center gap-2">
+                  {showSuccess && (
+                    <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400 animate-in fade-in slide-in-from-right-2">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Sucesso!
+                    </span>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 text-xs gap-2 border-zinc-200 dark:border-zinc-700 hover:bg-amber-50 dark:hover:bg-amber-950/30 hover:text-amber-600"
+                    onClick={handleExplain}
+                    disabled={!generatedCode || isExplaining}
+                  >
+                    {isExplaining ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Lightbulb className="h-3.5 w-3.5" />
+                    )}
+                    <span className="hidden sm:inline">{isExplaining ? "Explicando..." : "Explicar"}</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 text-xs gap-2 border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    onClick={handleExport}
+                    disabled={!generatedCode || isExporting}
+                  >
+                    {isExporting ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Download className="h-3.5 w-3.5" />
+                    )}
+                    <span className="hidden sm:inline">{isExporting ? "Exportando..." : "Baixar .tsx"}</span>
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-1 p-0 overflow-hidden bg-zinc-50/30 dark:bg-zinc-900/10 relative min-h-[500px]">
+              {activeTab === "preview" ? (
+                <div className="h-full w-full">
+                  {sandboxError && (
+                    <div className="absolute inset-0 z-20 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-sm flex items-center justify-center p-6 text-center">
+                      <div className="max-w-md space-y-4">
+                        <div className="mx-auto w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                          <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                        </div>
+                        <div className="space-y-2">
+                          <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Erro de Renderização</h3>
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-3">
+                            {sandboxError.message}
+                          </p>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Button 
+                            onClick={handleFixWithAI}
+                            className="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                            size="sm"
+                            disabled={isLoading}
+                          >
+                            {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                            Corrigir com IA
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            onClick={() => setSandboxError(null)}
+                            className="text-xs"
+                            size="sm"
+                          >
+                            Ignorar e ver código
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {generatedCode ? (
+                    <PreviewSandbox 
+                      code={generatedCode} 
+                      width={previewWidth}
+                      className="border-none rounded-none" 
+                      onError={handleSandboxError}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full min-h-[400px]">
+                      <div className="text-center space-y-3 opacity-40">
+                        <div className="mx-auto w-12 h-12 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
+                          <Eye className="h-6 w-6" />
+                        </div>
+                        <p className="text-sm font-medium text-zinc-500">
+                          O preview aparecerá aqui
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="relative h-full w-full bg-zinc-950 overflow-hidden">
                   <pre className="absolute inset-0 overflow-auto p-6 text-xs md:text-sm font-mono leading-relaxed text-zinc-300">
                     <code>
                       {generatedCode || "// Fale para gerar o código..."}
@@ -457,79 +544,9 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card className="flex flex-col border-zinc-200/60 dark:border-zinc-800/60 shadow-lg">
-              <CardHeader className="border-b border-zinc-100 dark:border-zinc-800 py-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Eye className="h-4 w-4 text-zinc-500" />
-                    <CardTitle>Preview</CardTitle>
-                  </div>
-                  <PreviewToolbar 
-                    currentWidth={previewWidth} 
-                    onWidthChange={setPreviewWidth} 
-                  />
-                </div>
-              </CardHeader>
-              <CardContent className="flex-1 p-0 overflow-hidden bg-zinc-50/30 dark:bg-zinc-900/10 relative">
-                {sandboxError && (
-                  <div className="absolute inset-0 z-20 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-sm flex items-center justify-center p-6 text-center">
-                    <div className="max-w-md space-y-4">
-                      <div className="mx-auto w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                        <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
-                      </div>
-                      <div className="space-y-2">
-                        <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Erro de Renderização</h3>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-3">
-                          {sandboxError.message}
-                        </p>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <Button 
-                          onClick={handleFixWithAI}
-                          className="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white"
-                          size="sm"
-                          disabled={isLoading}
-                        >
-                          {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
-                          Corrigir com IA
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          onClick={() => setSandboxError(null)}
-                          className="text-xs"
-                          size="sm"
-                        >
-                          Ignorar e ver código
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {generatedCode ? (
-                  <PreviewSandbox 
-                    code={generatedCode} 
-                    width={previewWidth}
-                    className="border-none rounded-none" 
-                    onError={handleSandboxError}
-                  />
-                ) : (
-                  <div className="flex items-center justify-center w-full h-full min-h-[400px]">
-                    <div className="text-center space-y-3 opacity-40">
-                      <div className="mx-auto w-12 h-12 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
-                        <Eye className="h-6 w-6" />
-                      </div>
-                      <p className="text-sm font-medium text-zinc-500">
-                        O preview aparecerá aqui
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {showExplanation && (
