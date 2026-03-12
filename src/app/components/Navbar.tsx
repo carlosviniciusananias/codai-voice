@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Button } from "./ui/button";
 
 export function Navbar() {
   return (
@@ -18,6 +17,27 @@ export function Navbar() {
             </p>
           </div>
         </div>
+
+        <nav className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="rounded-full px-3 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            Studio
+          </Link>
+          <Link
+            href="/admin/workflow"
+            className="rounded-full px-3 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            Workflow
+          </Link>
+          <Link
+            href="/admin/prompts"
+            className="rounded-full px-3 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            Prompts
+          </Link>
+        </nav>
       </div>
     </header>
   );

@@ -1,23 +1,20 @@
 {
-  "jiraId": "CB-9",
-  "branch": "feature/CB-9-multi-step-assembly",
+  "jiraId": "CB-10",
+  "branch": "feature/CB-10-dx-experience",
   "prNumber": null,
-  "currentPhase": "QA",
+  "currentPhase": "DX",
   "retryCount": 0,
   "lastError": null,
   "isCrisisMode": false,
   "agents": {
     "mike": "completed",
     "isa": "completed",
-    "buttowski": {
-      "status": "completed",
-      "score": 100
-    },
+    "buttowski": "completed",
     "hermione": {
       "status": "completed",
-      "coverage": 85
+      "coverage": 80
     },
-    "harry": "pending"
+    "harry": "completed"
   },
   "contextMemory": {
     "currentLayout": "",

@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-03-12T00:00:00.000Z",
+  "agents": {
+    "mike": {
+      "activeVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "createdAt": "2026-03-12T00:00:00.000Z",
+          "createdBy": "system",
+          "label": "baseline",
+          "content": "Mike: Principal Engineer focado em arquitetura, escalabilidade e decisoes tecnicas estrategicas.",
+          "checksum": "sha256:3537f9e7cf1258eb080334dfd64d7a40ba0eb9542f9097f46e7404f6b43fd827",
+          "rollbackFrom": null
+        }
+      ]
+    },
+    "isa": {
+      "activeVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "createdAt": "2026-03-12T00:00:00.000Z",
+          "createdBy": "system",
+          "label": "baseline",
+          "content": "Isa: Full Stack Engineer responsavel por implementacao, correcao de bugs e integracoes.",
+          "checksum": "sha256:49604a8f45f889f96f0ff56f8f0c2532453092c3cd7077720cf0962d38cdd1d1",
+          "rollbackFrom": null
+        }
+      ]
+    },
+    "buttowski": {
+      "activeVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "createdAt": "2026-03-12T00:00:00.000Z",
+          "createdBy": "system",
+          "label": "baseline",
+          "content": "Buttowski: Tech Lead focado em qualidade, padroes de codigo e revisao tecnica.",
+          "checksum": "sha256:f6af935ce4291f38a4d7e70344ce80fe5341dd68eaf74e30759e566fc5240f5e",
+          "rollbackFrom": null
+        }
+      ]
+    },
+    "hermione": {
+      "activeVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "createdAt": "2026-03-12T00:00:00.000Z",
+          "createdBy": "system",
+          "label": "baseline",
+          "content": "Hermione: QA focada em testes automatizados, cobertura e validacao de qualidade.",
+          "checksum": "sha256:be671abf0f5065d76d4f4f00b43eb468c18d90d7a215db4ce22d42f86179622c",
+          "rollbackFrom": null
+        }
+      ]
+    },
+    "harry": {
+      "activeVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "createdAt": "2026-03-12T00:00:00.000Z",
+          "createdBy": "system",
+          "label": "baseline",
+          "content": "Harry: Developer Advocate focado em DX, documentacao e produtividade.",
+          "checksum": "sha256:2eece8ccc4ad603f5b09b0219e3245650d2be5580a58e31a9299f9773f0e3407",
+          "rollbackFrom": null
+        }
+      ]
+    },
+    "workflow": {
+      "activeVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "createdAt": "2026-03-12T00:00:00.000Z",
+          "createdBy": "system",
+          "label": "baseline",
+          "content": "Workflow: Orquestrador do fluxo Design -> Implementacao -> Review -> QA -> DX.",
+          "checksum": "sha256:0d3d65cd10a592f89f32f567cb2d48d4b2563a547a7feadab8e4f44a01681177",
+          "rollbackFrom": null
+        }
+      ]
+    }
+  }
+}

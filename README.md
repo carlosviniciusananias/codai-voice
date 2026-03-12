@@ -37,6 +37,13 @@ Construa interfaces complexas passo a passo. Adicione elementos, edite seções 
 Understand the *why* behind the generated code. Our AI Tutor explains technical decisions, layout choices, and best practices.
 [Read the full documentation &rarr;](docs/features/explain-to-me.md)
 
+### 🛠️ DX Toolkit (CB-10)
+Workflow observability and prompt governance for the multi-agent system:
+- CLI for local/CI monitoring
+- Real-time admin dashboard via polling
+- Prompt playground with versioning and rollback
+[Read DX tooling docs &rarr;](docs/features/CB-10-dx-tooling.md)
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

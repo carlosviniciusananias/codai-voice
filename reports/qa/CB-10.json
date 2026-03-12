@@ -1,0 +1,31 @@
+{
+  "issue": "CB-10",
+  "timestamp": "2026-03-12T17:10:00.000Z",
+  "status": "passed-with-known-constraints",
+  "checks": [
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "result": "passed",
+      "notes": "Sem erros. Existem warnings preexistentes fora do escopo CB-10."
+    },
+    {
+      "name": "cli-status",
+      "command": "node scripts/workflow-cli.mjs status --json --no-color",
+      "result": "passed",
+      "notes": "Saida JSON valida com schema esperado."
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "result": "blocked",
+      "notes": "Ambiente local com Node 18.20.4; Next 16 requer >=20.9.0."
+    },
+    {
+      "name": "e2e-cb10",
+      "command": "npm run test:e2e -- --grep CB-10",
+      "result": "blocked",
+      "notes": "Nao ha testes E2E nomeados para CB-10 nesta base atualmente."
+    }
+  ]
+}
